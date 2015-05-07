@@ -42,8 +42,8 @@ app.get('/getBotSquad', function (req, res) {
     reqHandler.getBotSquad(req,res);
 });
 
-app.get('/generateFixtures', function (req, res) {
-    reqHandler.generateFixtures(req,res);
+app.get('/getTeamByFixtureAndMatch', function (req, res) {
+    reqHandler.getTeamByFixtureAndMatch(req,res);
 });
 
 app.post('/getInfoByEmail', function (req, res) {

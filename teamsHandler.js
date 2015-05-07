@@ -4,6 +4,10 @@
 var Promise = require('bluebird');
 var teamsCollection;
 
+
+var m_currentFixture = 0;
+
+
 var setup = function setup(db){
     db.collection("Teams",function(err, data) {
         if(!err) {
@@ -69,12 +73,12 @@ var getBotTeam = function getBotTeam (){
     return defer.promise;
 }
 
-var updateTeam = function updateTeam (email,Key,value){
+var updateTeam = function updateTeam (findBy,Key,value){
     var defer = Promise.defer();
     //console.log(body);
     var obj = {};
     obj[Key] = value;
-    teamsCollection.update({email:email},{$set: obj},function(err,data){
+    teamsCollection.update(findBy,{$set: obj},function(err,data){
         if(!data){
             console.log("updateTeam err",err);
             defer.resolve(err);
@@ -135,11 +139,11 @@ var getTeamsInLeague = function getTeamsInLeague(){
     return defer.promise;
 }
 
-var addValueToTeam = function addValueToTeam (email,key,value){
+var addValueToTeam = function addValueToTeam (findBy,key,value){
     var defer = Promise.defer();
     var obj = {};
     obj[key] = parseInt(value);
-    teamsCollection.update({"email":email},{$inc: obj},function(err,data){
+    teamsCollection.update(findBy,{$inc: obj},function(err,data){
         if(!data){
             console.log("addValueToTeam err",err);
             defer.resolve("null");
@@ -150,9 +154,9 @@ var addValueToTeam = function addValueToTeam (email,key,value){
     return defer.promise;
 }
 
-var getSortedTeams = function getSortedTeams (){
+var getSortedTeams = function getSortedTeams (leagueNum){
     var defer = Promise.defer();
-    teamsCollection.find({}).sort({_id:1}).toArray(function(err,sortedTeams) {
+    teamsCollection.find({league: leagueNum}).sort({_id:1}).toArray(function(err,sortedTeams) {
         if (!sortedTeams) {
             console.log("getSortedTeams err",err)
             defer.resolve("null");
@@ -168,7 +172,7 @@ var generateFixtures = function generateFixtures(){
     //console.log(data.teams);
     // Reference for this algorithm: http://bluebones.net/2005/05/generating-fixture-lists/
     var m_FixturesList;
-    var totalTeams = teams.length;
+    var totalTeams = 20;
     var totalFixtures = totalTeams - 1;
     var matchesPerFixture = totalTeams / 2;
     var tempFixturesList =  [[[]],[[]],[[]]];
@@ -225,23 +229,86 @@ var generateFixtures = function generateFixtures(){
             }
             odd++;
         }
-        }
+    }
 
-        // Last team can't be away for every game so flip them
-        // to home on odd rounds.
-        for (var fixture = 0; fixture < totalFixtures; fixture++) {
-            if (fixture % 2 == 1) {
-                var tempTeam = m_FixturesList[fixture][0][0];
-                m_FixturesList[fixture][0][0] = m_FixturesList[fixture][0][1];
-                m_FixturesList[fixture][0][1] = tempTeam;
-            }
+    // Last team can't be away for every game so flip them
+    // to home on odd rounds.
+    for (var fixture = 0; fixture < totalFixtures; fixture++) {
+        if (fixture % 2 == 1) {
+            var tempTeam = m_FixturesList[fixture][0][0];
+            m_FixturesList[fixture][0][0] = m_FixturesList[fixture][0][1];
+            m_FixturesList[fixture][0][1] = tempTeam;
         }
-        return m_FixturesList;
+    }
+    return m_FixturesList;
+}
+
+var getTeamByFixtureAndMatch = function  getTeamByFixtureAndMatch(i_Fixture, i_Match, i_IsHomeTeam){
+    var m_FixturesList = generateFixtures();
+    var fixturesPerRound = 19;
+    var matchesPerFixture = 10;
+    if (i_Fixture + 1 > fixturesPerRound*2 || i_Match + 1 > matchesPerFixture) {
+        return null;
+    }
+
+    var isSecondRound = i_Fixture >= fixturesPerRound;
+    var teamIndex;
+    if (isSecondRound)
+    {
+        teamIndex = i_IsHomeTeam ? 1 : 0;
+        return m_FixturesList[i_Fixture % fixturesPerRound][i_Match][teamIndex];
+    }
+    teamIndex = i_IsHomeTeam ? 0 : 1;
+    return m_FixturesList[i_Fixture % fixturesPerRound] [i_Match][teamIndex];
+}
+
+function  GetOpponentByTeam( i_Team) {
+    console.log("GetOpponentByTeam");
+    return GetOpponentByTeamAndFixture(i_Team,m_currentFixture);
+}
+
+function  GetOpponentByTeamAndFixture( i_Team,  i_Fixture){
+    console.log("GetOpponentByTeamAndFixture");
+    var v_IsHomeTeam = true;
+    for (var i = 0; i < getMatchesPerFixture(); i++){
+        if (getTeamByFixtureAndMatch(i_Fixture, i, v_IsHomeTeam) == i_Team) {
+            return getTeamByFixtureAndMatch(i_Fixture, i, !v_IsHomeTeam);
+        }
+        if (getTeamByFixtureAndMatch(i_Fixture, i, !v_IsHomeTeam) == i_Team) {
+            return getTeamByFixtureAndMatch(i_Fixture, i, v_IsHomeTeam);
+        }
+    }
+    console.log("Could not find team in fixture list!");
+    return null;
+}
+
+function getMatchesPerFixture(){
+    return 10;
+}
+
+function getTotalNumOfFixtures(){
+    return 19*2;
+}
+
+function  ExecuteNextFixture(){
+    console.log("ExecuteNextFixture");
+     var v_IsHomeTeam = true;
+    // Validate not end of season
+    if (m_CurrentFixture == getTotalNumOfFixtures()){
+        //End of season logic should be here
+        return;
+    }
+    for (var i = 0; i < getMatchesPerFixture(); i++){
+       CalcResult(getTeamByFixtureAndMatch(m_CurrentFixture, i, v_IsHomeTeam),
+            getTeamByFixtureAndMatch(m_CurrentFixture, i, !v_IsHomeTeam));
+    }
+    m_CurrentFixture++;
 }
 
 
 
 
+module.exports.getTeamByFixtureAndMatch = getTeamByFixtureAndMatch;
 module.exports.getSortedTeams = getSortedTeams;
 module.exports.addValueToTeam = addValueToTeam;
 module.exports.updateTeam = updateTeam;

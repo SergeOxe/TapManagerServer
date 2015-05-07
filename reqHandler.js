@@ -126,6 +126,11 @@ var generateFixtures = function generateFixtures(req,res){
     });
 }
 
+var getTeamByFixtureAndMatch = function getTeamByFixtureAndMatch(req,res){
+    console.log(teamsHandler.getTeamByFixtureAndMatch(19,0,false));
+}
+
+module.exports.getTeamByFixtureAndMatch = getTeamByFixtureAndMatch;
 module.exports.generateFixtures = generateFixtures;
 module.exports.addValueToTeam = addValueToTeam;
 module.exports.addNewBotSquad = addNewBotSquad;

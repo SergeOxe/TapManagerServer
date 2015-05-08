@@ -17,7 +17,7 @@ app.post('/newUser', function (req, res) {
 
 });
 
-app.post('/newTeam', function (req, res) {
+app.post('/newNumTeam', function (req, res) {
     reqHandler.addNewTeam(req,res);
 
 });
@@ -44,6 +44,10 @@ app.get('/getBotSquad', function (req, res) {
 
 app.get('/getTeamByFixtureAndMatch', function (req, res) {
     reqHandler.getTeamByFixtureAndMatch(req,res);
+});
+
+app.get('/executeNextFixture', function (req, res) {
+    reqHandler.executeNextFixture(req,res);
 });
 
 app.post('/getInfoByEmail', function (req, res) {

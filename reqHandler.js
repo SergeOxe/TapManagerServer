@@ -5,6 +5,7 @@ var leagueHandler = require("./leagueHandler");
 var squadHandler = require("./squadHandler");
 var teamsHandler =  require("./teamsHandler");
 var bucketHandler = require("./bucketHandler");
+var gameManager = require("./gameManager");
 var db;
 
 // Connect to the db
@@ -20,6 +21,7 @@ MongoClient.connect("mongodb://localhost:27017", function(err, data) {
     userHandler.setup(db);
     teamsHandler.setup(db);
     bucketHandler.setup(db);
+    gameManager.setup(db);
     //leagueHandler.setup(db);
 });
 
@@ -49,7 +51,7 @@ var updateUser = function updateUser(email,Key,value,res){
 }
 
 var addNewTeam = function addNewTeam (team,res){
-    teamsHandler.addNewTeam(team).then(function(data){
+    teamsHandler.addNewNumTeam(20,1).then(function(data){
         res.send(data);
     });
 }
@@ -127,8 +129,14 @@ var generateFixtures = function generateFixtures(req,res){
 }
 
 var getTeamByFixtureAndMatch = function getTeamByFixtureAndMatch(req,res){
-    console.log(teamsHandler.getTeamByFixtureAndMatch(19,0,false));
+    console.log(gameManager.getTeamByFixtureAndMatch(19,0,false));
 }
+
+var executeNextFixture = function executeNextFixture(req,res){
+    gameManager.executeNextFixture();
+}
+
+module.exports.executeNextFixture = executeNextFixture;
 
 module.exports.getTeamByFixtureAndMatch = getTeamByFixtureAndMatch;
 module.exports.generateFixtures = generateFixtures;

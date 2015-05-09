@@ -9,8 +9,18 @@ var m_currentFixture;
 var sortedTeams;
 var m_fixturesLists;
 var gameManagerCollection;
+var initPriceOfFans;
+var initPriceOfFacilities;
+var initPriceOfStadium;
+var fansMultiplier;
+var facilitiesMultiplier;
+var stadiumMultiplier;
+var multiplierBoost;
+var lastGame;
+var timeIntervalInHours;
 
 var setup = function setup(db){
+    var defer = Promise.defer();
     teamsHandler.getSortedTeams(1).then(function (data) {
         sortedTeams = data.teams;
     });
@@ -25,8 +35,49 @@ var setup = function setup(db){
     getLeagueSetup().then(function(data){
         m_currentFixture = data.currentFixture;
         m_fixturesLists = data.fixturesLists;
+        initPriceOfFans = data.pricesAndMultipliers.initPriceOfFans;
+        initPriceOfFacilities = data.pricesAndMultipliers.initPriceOfFacilities;
+        initPriceOfStadium = data.pricesAndMultipliers.initPriceOfStadium;
+        fansMultiplier = data.pricesAndMultipliers.facilitiesMultiplier;
+        facilitiesMultiplier = data.pricesAndMultipliers.facilitiesMultiplier;
+        stadiumMultiplier = data.pricesAndMultipliers.stadiumMultiplier;
+        multiplierBoost = data.pricesAndMultipliers.multiplierBoost;
+        lastGame = data.lastGame;
+        timeIntervalInHours = data.timeIntervalInHours;
+        defer.resolve("ok");
+        lastGame = Date.now();
+        executeGames();
     });
+
+    return defer.promise;
 };
+
+function getSetup() {
+    var defer = Promise.defer();
+    gameManagerCollection.findOne({}, function (err, data) {
+        if (!err) {
+            defer.resolve(data);
+        }else{
+            console.log("getSetup err", err);
+            defer.resolve("null");
+        }
+    })
+    return defer.promise;
+}
+
+function executeGames() {
+    var deltaTime  = timeIntervalInHours *3600000 - (Date.now() - lastGame);
+    if(deltaTime > 0 ){
+        console.log("next Game In "+ getTimeTillNextMatch())
+        setTimeout(executeGames, deltaTime);
+    }else{
+        executeNextFixture();
+        lastGame = Date.now();
+        console.log("next Game In "+ getTimeTillNextMatch());
+        updateGamesCollection({},{lastGame:lastGame});
+        setTimeout(executeGames, timeIntervalInHours * 3600000);
+    }
+}
 
 function getLeagueSetup() {
     var defer = Promise.defer();
@@ -35,15 +86,21 @@ function getLeagueSetup() {
             console.log("getLeagueSetup err", err);
             var doc = {currentFixture : 1,
                         numOfLeagues: 1,
-                        fixturesLists : generateFixtures()
+                        lastGame: Date.now(),
+                        timeIntervalInHours : 0.0833,
+                        fixturesLists : generateFixtures(),
+                        pricesAndMultipliers:{
+                            multiplierBoost : 1.5,
+                            initPriceOfFans:1000,
+                            initPriceOfFacilities:4000,
+                            initPriceOfStadium: 8000,
+                            fansMultiplier: 1.8,
+                            facilitiesMultiplier: 2.25,
+                            stadiumMultiplier:4
+                            }
                         };
-            insertToGameCollection(doc,function(err,data){
-                if (err){
-                    console.log("getLeagueSetup err", err);
-                    defer.resolve("null");
-                } else{
-                  defer.resolve(data);
-                }
+            insertToGameCollection(doc).then(function(data){
+                defer.resolve(doc);
             });
         } else {
             //console.log("getLeagueSetup","ok");
@@ -65,6 +122,7 @@ function insertToGameCollection(doc){
     }});
 return defer.promise;
 }
+
 function addValueToGameCollection (findBy,obj){
     var defer = Promise.defer();
     gameManagerCollection.update(findBy,{$inc: obj},function(err,data){
@@ -79,9 +137,6 @@ function addValueToGameCollection (findBy,obj){
 }
 
 function updateGamesCollection (findBy,obj){
-    if ( Object.keys(obj).length === 0){
-        return;
-    }
     var defer = Promise.defer();
     gameManagerCollection.update(findBy,{$set: obj},function(err,data){
         if(!data){
@@ -182,11 +237,11 @@ var getTeamByFixtureAndMatch = function getTeamByFixtureAndMatch(i_Fixture, i_Ma
     if (isSecondRound) {
         teamIndex = i_IsHomeTeam ? 1 : 0;
         var index  = m_fixturesLists[i_Fixture % fixturesPerRound][i_Match][teamIndex];
-        return sortedTeams[index];
+        return index;
     }
     teamIndex = i_IsHomeTeam ? 0 : 1;
     var index  = m_fixturesLists[i_Fixture % fixturesPerRound][i_Match][teamIndex];
-        return sortedTeams[index];
+        return index;
 
 }
 
@@ -198,7 +253,7 @@ function getTotalNumOfFixtures(){
     return 19*2;
 }
 
-var executeNextFixture = function  executeNextFixture(){
+var executeNextFixture = function  executeNextFixture(res){
     var v_IsHomeTeam = true;
     // Validate not end of season
     if (m_currentFixture == getTotalNumOfFixtures()){
@@ -208,23 +263,31 @@ var executeNextFixture = function  executeNextFixture(){
     for (var i = 0; i < getMatchesPerFixture(); i++){
         var team1 = getTeamByFixtureAndMatch(m_currentFixture, i, v_IsHomeTeam);
         var team2 = getTeamByFixtureAndMatch(m_currentFixture, i, !v_IsHomeTeam);
-        matchManager.calcResult(team1,team2);
+        var teamObj1 = sortedTeams[team1];
+        var teamObj2 = sortedTeams[team2];
+        matchManager.calcResult(teamObj1,teamObj2);
     }
     var curr = {};
     curr["currentFixture"] = 1;
     addValueToGameCollection({},curr);
     m_currentFixture++;
+    lastGame = Date.now();
+    console.log("executeNextFixture","ok");
+    //if (!res) {
+        //res.send("ok");
+    //}
 }
 
 function  GetOpponentByTeamAndFixture( i_Team,  i_Fixture){
-    console.log("GetOpponentByTeamAndFixture");
     var v_IsHomeTeam = true;
     for (var i = 0; i < getMatchesPerFixture(); i++){
         if (getTeamByFixtureAndMatch(i_Fixture, i, v_IsHomeTeam) == i_Team) {
-            return getTeamByFixtureAndMatch(i_Fixture, i, !v_IsHomeTeam);
+            return {opponent :sortedTeams[getTeamByFixtureAndMatch(i_Fixture, i, !v_IsHomeTeam)].teamName,
+                    isHomeMatch:true};
         }
         if (getTeamByFixtureAndMatch(i_Fixture, i, !v_IsHomeTeam) == i_Team) {
-            return getTeamByFixtureAndMatch(i_Fixture, i, v_IsHomeTeam);
+            return{opponent : sortedTeams[getTeamByFixtureAndMatch(i_Fixture, i, v_IsHomeTeam)].teamName,
+                    isHomeMatch:false};
         }
     }
     console.log("Could not find team in fixture list!");
@@ -235,6 +298,73 @@ function  GetOpponentByTeam( i_Team) {
     return GetOpponentByTeamAndFixture(i_Team,m_currentFixture);
 }
 
+var getIndexOfTeamByEmail = function getIndexOfTeamByEmail(email){
+    var defer = Promise.defer();
+    var index;
+    teamsHandler.getTeamByEmail(email).then(function(data){
+        var id = data.team._id;
+        for (var i = 0 ; i < sortedTeams.length ; i++){
+            if (String(sortedTeams[i]._id).valueOf() == String(id).valueOf()){
+                defer.resolve(i);
+                break;
+            }
+        }
+        defer.resolve("null");
+    });
+    return defer.promise;
+}
+
+var getMultiplierBoost = function getMultiplierBoost(){
+    return multiplierBoost;
+}
+
+var getInitPriceOfFans = function getInitPriceOfFans(){
+    return initPriceOfFans;
+}
+
+var getInitPriceOfFacilities = function getInitPriceOfFacilities(){
+    return initPriceOfFacilities;
+}
+
+var getInitPriceOfStadium = function getInitPriceOfStadium(){
+    return multiplierBoost;
+}
+
+var getFansMultiplier = function getFansMultiplier(){
+    return multiplierBoost;
+}
+
+var getFacilitiesMultiplier = function getFacilitiesMultiplier(){
+    return multiplierBoost;
+}
+
+var getStadiumMultiplier = function getStadiumMultiplier(){
+    return stadiumMultiplier;
+}
+
+var getTimeTillNextMatch = function getTimeTillNextMatch(){
+    return  (timeIntervalInHours*3600000) - (Date.now() - lastGame);
+}
+
+var getOpponentByEmail = function getOpponentByEmail( email) {
+    var defer = Promise.defer();
+    getIndexOfTeamByEmail(email).then(function(data){
+        defer.resolve(GetOpponentByTeamAndFixture(data,m_currentFixture));
+    });
+    return defer.promise;
+}
+
+
+module.exports.getOpponentByEmail = getOpponentByEmail;
+module.exports.getTimeTillNextMatch = getTimeTillNextMatch;
 module.exports.executeNextFixture = executeNextFixture;
 module.exports.getTeamByFixtureAndMatch = getTeamByFixtureAndMatch;
 module.exports.setup = setup;
+module.exports.getSetup = getSetup;
+module.exports.getMultiplierBoost = getMultiplierBoost;
+module.exports.getInitPriceOfFans = getInitPriceOfFans;
+module.exports.getInitPriceOfFacilities = getInitPriceOfFacilities;
+module.exports.getInitPriceOfStadium = getInitPriceOfStadium;
+module.exports.getFansMultiplier = getFansMultiplier;
+module.exports.getFacilitiesMultiplier = getFacilitiesMultiplier;
+module.exports.getStadiumMultiplier = getStadiumMultiplier;

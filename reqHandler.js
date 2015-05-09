@@ -9,8 +9,8 @@ var gameManager = require("./gameManager");
 var db;
 
 // Connect to the db
-//MongoClient.connect("mongodb://Serge:5958164se@ds063889.mongolab.com:63889/tapmanagerdb", function(err, data) {
-MongoClient.connect("mongodb://localhost:27017", function(err, data) {
+MongoClient.connect("mongodb://Serge:5958164se@ds063889.mongolab.com:63889/tapmanagerdb", function(err, data) {
+//MongoClient.connect("mongodb://localhost:27017", function(err, data) {
     if (!err) {
         console.log("We are connected");
     } else {
@@ -21,9 +21,19 @@ MongoClient.connect("mongodb://localhost:27017", function(err, data) {
     userHandler.setup(db);
     teamsHandler.setup(db);
     bucketHandler.setup(db);
-    gameManager.setup(db);
+    gameManager.setup(db).then(function(data){
+        console.log("gameManager.setup","ok");
+    });
     //leagueHandler.setup(db);
 });
+
+
+
+var loginUser = function loginUser (user,res){
+    userHandler.loginUser(user).then(function(data){
+        res.send(data);
+    });
+}
 
 var addNewUser = function addNewUser (user,res){
     userHandler.addNewUser(user).then(function(data){
@@ -73,6 +83,7 @@ var getBotSquad = function getBotSquad(req,res){
      results.push(bucketHandler.addNewBucket(details));
      results.push(squadHandler.newSquadForUser(details));
      Promise.all(results).then(function(data){
+
          res.send("ok");
      })
  }
@@ -86,13 +97,20 @@ var getInfoByEmail = function getInfoByEmail(email){
     results.push(teamsHandler.getTeamsInLeague());
     results.push(bucketHandler.getBucketByEmail(email));
     results.push(squadHandler.getSquadByEmail(email));
+    results.push(gameManager.getSetup());
+    results.push(gameManager.getTimeTillNextMatch());
+    results.push(gameManager.getOpponentByEmail(email));
     Promise.all(results).then(function(data){
         var json = {};
         json["user"] = data[0];
         json["league"] = data[2];
         json["team"] = data[1].team;
-        json["bucket"] = data[3];
+        json["bucket"] = {details:data[3],timeNow: Date.now()};
+        //json["timeNow"] = Date.now();
         json["squad"] = data[4];
+        json["settings"] = data[5].pricesAndMultipliers;
+        json["timeTillNextMatch"] = data[6];
+        json["nextMatch"] = data[7];
         defer.resolve(json);
         //console.log(json);
     })
@@ -100,10 +118,8 @@ var getInfoByEmail = function getInfoByEmail(email){
 }
 
 var getTeamsInLeague = function getTeamsInLeague(){
-    var str = "";
     teamsHandler.getTeamsInLeague().then(function(data){
         data.forEach(function(team){
-
         })
     });
 }
@@ -116,7 +132,6 @@ var addNewBotSquad = function addNewBotSquad(req,res){
 
 var addValueToTeam = function addValueToTeam(req,res){
     var json = JSON.parse(req);
-    console.log(json);
     teamsHandler.addValueToTeam(json.email,json.key,json.value).then(function(data){
         res.send(data);
     })
@@ -133,11 +148,50 @@ var getTeamByFixtureAndMatch = function getTeamByFixtureAndMatch(req,res){
 }
 
 var executeNextFixture = function executeNextFixture(req,res){
-    gameManager.executeNextFixture();
+    gameManager.executeNextFixture(res);
 }
 
-module.exports.executeNextFixture = executeNextFixture;
+var addCoinMoney = function addCoinMoney(req,res){
+    userHandler.addCoinMoney(req.body.email,req.body.clicks).then(function(data){
+        res.send(data);
+    });
+}
 
+var boostPlayer = function boostPlayer(req,res){
+    squadHandler.boostPlayer(req.body.email,req.body.id).then(function(data){
+       res.send(data);
+    });
+}
+
+var upgradeItem = function upgradeItem(req,item,res){
+    userHandler.upgradeItem(req.body.email,item).then(function(data){
+        res.send(data);
+    })
+}
+var getTimeTillNextMatch = function getTimeTillNextMatch(res){
+    res.send({time: gameManager.getTimeTillNextMatch()});
+
+}
+
+var addMoneyToUser = function addMoneyToUser(req,res){
+    userHandler.addMoneyToUser(req.body.email,parseInt(req.body.money)).then(function(data){
+        res.send(data);
+    });
+}
+
+var collectBucket = function collectBucket(req,res){
+    bucketHandler.collectNowBucket(req.body.email).then(function(data){
+        res.send(data);
+    });
+}
+
+module.exports.collectBucket = collectBucket;
+module.exports.addMoneyToUser = addMoneyToUser;
+module.exports.getTimeTillNextMatch = getTimeTillNextMatch;
+module.exports.upgradeItem = upgradeItem;
+module.exports.boostPlayer = boostPlayer;
+module.exports.executeNextFixture = executeNextFixture;
+module.exports.addCoinMoney =addCoinMoney;
 module.exports.getTeamByFixtureAndMatch = getTeamByFixtureAndMatch;
 module.exports.generateFixtures = generateFixtures;
 module.exports.addValueToTeam = addValueToTeam;
@@ -152,3 +206,4 @@ module.exports.getBotSquad = getBotSquad;
 module.exports.newTeamUser = newTeamUser;
 module.exports.getTeamsInLeague = getTeamsInLeague;
 module.exports.addNewBucket = addNewBucket;
+module.exports.loginUser = loginUser;

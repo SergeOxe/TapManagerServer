@@ -1,7 +1,7 @@
 {
   "name": "Serge",
   "version": "1.0.0",
-  "description": "Ex1",
+  "description": "TapManager",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,7 +12,10 @@
     "bluebird": "^2.9.14",
     "mongodb": "*",
     "bson": "*",
-    "aws-sdk" : "*"
+    "aws-sdk" : "*",
+    "body-parser": "*",
+    "multer": "*",
+    "express":"*"
   },
   "engines": {
     "node": "*",

@@ -9,7 +9,7 @@ var m_MinCrowdMultiplier = 0.8;
 var m_MaxCrowdMultiplier = 1.5;
 
 
-var calcResult  = function  calcResult(i_HomeTeam, i_AwayTeam,teams) {
+var calcResult  = function  calcResult(i_HomeTeam, i_AwayTeam) {
     var defer = Promise.defer();
     var randomCrowdMultiplier = randomIntFromInterval(m_MinCrowdMultiplier, m_MaxCrowdMultiplier)/10;
     //float homeTeamOdds = i_HomeTeam.GetWinOdds();
@@ -26,20 +26,20 @@ var calcResult  = function  calcResult(i_HomeTeam, i_AwayTeam,teams) {
         // Home team win
         homeTeamGoals = randomIntFromInterval(1, 5);
         awayTeamGoals = randomIntFromInterval(0, homeTeamGoals);
-        eHomeResult = "Won";
-        eAwayResult = "Lost";
+        eHomeResult = 0;
+        eAwayResult = 1;
     } else if (outcome < 0.6) {
         // Tie
         homeTeamGoals = randomIntFromInterval(1, 5);
         awayTeamGoals = homeTeamGoals;
-        eHomeResult = "Draw";
-        eAwayResult = "Draw";
+        eHomeResult = 2;
+        eAwayResult = 2;
     } else {
         // Away team win
         awayTeamGoals = randomIntFromInterval(1, 5);
         homeTeamGoals = randomIntFromInterval(0, awayTeamGoals);
-        eHomeResult = "Lost";
-        eAwayResult = "Won";
+        eHomeResult = 1;
+        eAwayResult = 0;
     }
     var v_isHomeTeam = true;
     var matchInfo =  MatchInfo(i_HomeTeam, i_AwayTeam, homeTeamGoals, awayTeamGoals, crowdAtMatch);
@@ -65,7 +65,7 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
     id["_id"] = team._id;
     var updateValue = {};
     var addValue = {};
-    if (i_result == "Won") {
+    if (i_result == 0) {
         addValue["gamesHistory.thisSeason.wins"] = 1;
         addValue["gamesHistory.allTime.wins"] = 1;
         addValue["statistics.currentWinStreak"] = 1;
@@ -73,11 +73,11 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         addValue["additionalFans"] = 25;
 
 
-        updateValue["lastResult"]= "Won";
+        updateValue["lastResult"]= 0;
         updateValue["statistics.currentLoseStreak"] = 0;
         updateValue["statistics.currentWinlessStreak"] = 0;
 
-    }else if (i_result == "Lost") {
+    }else if (i_result == 1) {
         addValue["gamesHistory.thisSeason.losts"] = 1;
         addValue["gamesHistory.allTime.lost"] = 1;
         addValue["statistics.currentLoseStreak"] = 1;
@@ -88,7 +88,7 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
             updateValue["gamesHistory.thisSeason.crowd"] = 0;
         }
 
-        updateValue["lastResult"]= "Lost";
+        updateValue["lastResult"]= 1;
         updateValue["statistics.currentWinStreak"] = 0;
         updateValue["statistics.currentUndefeatedStreak"] = 0;
 
@@ -99,7 +99,7 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         addValue["statistics.currentWinlessStreak"] = 1;
         addValue["additionalFans"] = 13;
 
-        updateValue["lastResult"]= "Draw";
+        updateValue["lastResult"]= 2;
         updateValue["statistics.currentWinStreak"] = 0;
         updateValue["statistics.currentLoseStreak"] = 0;
 
@@ -114,12 +114,16 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
     if (i_isHomeMatch) {
         addValue["gamesHistory.thisSeason.goalsFor"] = i_matchInfo.homeTeamGoals;
         addValue["gamesHistory.thisSeason.goalsAgainst"] = i_matchInfo.awayTeamGoals;
+        addValue["gamesHistory.allTime.goalsFor"] = i_matchInfo.homeTeamGoals;
+        addValue["gamesHistory.allTime.goalsAgainst"] = i_matchInfo.awayTeamGoals;
         addValue["gamesHistory.thisSeason.homeGames"] = 1;
         addValue["gamesHistory.thisSeason.crowd"] = i_matchInfo.crowdAtMatch;
 
     } else {
         addValue["gamesHistory.thisSeason.goalsAgainst"] = i_matchInfo.homeTeamGoals;
         addValue["gamesHistory.thisSeason.goalsFor"] = i_matchInfo.awayTeamGoals;
+        addValue["gamesHistory.allTime.goalsAgainst"] = i_matchInfo.homeTeamGoals;
+        addValue["gamesHistory.allTime.goalsFor"] = i_matchInfo.awayTeamGoals;
     }
 
     updateValue["isLastGameIsHomeGame"] = i_isHomeMatch;

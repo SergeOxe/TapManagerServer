@@ -2,8 +2,8 @@
  * Created by User on 5/5/2015.
  */
 var Promise = require('bluebird');
-var matchManager = require('./matchManager');
 var squadHandler = require('./squadHandler');
+
 var teamsCollection;
 
 

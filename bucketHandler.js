@@ -92,7 +92,6 @@ var collectNowBucket = function collectNowBucket(email){
     var defer = Promise.defer();
     var results = [];
     getBucketByEmail(email).then(function(data){
-        console.log(Date.now() - data.lastFlush );
         if(Date.now() - data.lastFlush >= HOURS * 3600000){
             results.push(userHandler.addMoneyToUser(email,data.maxAmount));
             results.push(updateBucket(email,"lastFlush",Date.now()));

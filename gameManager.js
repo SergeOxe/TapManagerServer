@@ -7,6 +7,7 @@ var Promise = require('bluebird');
 
 var m_currentFixture;
 var sortedTeams;
+
 var m_fixturesLists;
 var gameManagerCollection;
 var initPriceOfFans;
@@ -99,9 +100,8 @@ function getLeagueSetup() {
                             stadiumMultiplier:4
                             }
                         };
-            insertToGameCollection(doc).then(function(data){
-                defer.resolve(doc);
-            });
+            insertToGameCollection(doc).then(function(data){});
+            defer.resolve(doc);
         } else {
             //console.log("getLeagueSetup","ok");
             defer.resolve(data);
@@ -254,28 +254,32 @@ function getTotalNumOfFixtures(){
 }
 
 var executeNextFixture = function  executeNextFixture(res){
-    var v_IsHomeTeam = true;
-    // Validate not end of season
-    if (m_currentFixture == getTotalNumOfFixtures()){
-        //End of season logic should be here
-        return;
-    }
-    for (var i = 0; i < getMatchesPerFixture(); i++){
-        var team1 = getTeamByFixtureAndMatch(m_currentFixture, i, v_IsHomeTeam);
-        var team2 = getTeamByFixtureAndMatch(m_currentFixture, i, !v_IsHomeTeam);
-        var teamObj1 = sortedTeams[team1];
-        var teamObj2 = sortedTeams[team2];
-        matchManager.calcResult(teamObj1,teamObj2);
-    }
-    var curr = {};
-    curr["currentFixture"] = 1;
-    addValueToGameCollection({},curr);
-    m_currentFixture++;
-    lastGame = Date.now();
-    console.log("executeNextFixture","ok");
+    teamsHandler.getSortedTeams(1).then(function (data) {
+        sortedTeams = data.teams;
+
+        var v_IsHomeTeam = true;
+        // Validate not end of season
+        if (m_currentFixture == getTotalNumOfFixtures()){
+            //End of season logic should be here
+            return;
+        }
+        for (var i = 0; i < getMatchesPerFixture(); i++){
+            var team1 = getTeamByFixtureAndMatch(m_currentFixture, i, v_IsHomeTeam);
+            var team2 = getTeamByFixtureAndMatch(m_currentFixture, i, !v_IsHomeTeam);
+            var teamObj1 = sortedTeams[team1];
+            var teamObj2 = sortedTeams[team2];
+            matchManager.calcResult(teamObj1,teamObj2);
+        }
+        var curr = {};
+        curr["currentFixture"] = 1;
+        addValueToGameCollection({},curr);
+        m_currentFixture++;
+        lastGame = Date.now();
+        console.log("executeNextFixture","ok");
     //if (!res) {
         //res.send("ok");
     //}
+    });
 }
 
 function  GetOpponentByTeamAndFixture( i_Team,  i_Fixture){

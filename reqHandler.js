@@ -42,26 +42,26 @@ var addNewUser = function addNewUser (user,res){
 }
 
 var addNewBucket = function addNewBucket(req,res){
-    bucketHandler.addNewBucket(req.body.email);
+    bucketHandler.addNewBucket(req.body.id);
 }
 
 
-var getUserByEmail = function getUserByEmail (user,res){
+var getUserById = function getUserById (user,res){
     //console.log(user);
-    userHandler.getUserByEmail(user,res).then(function(data){
+    userHandler.getUserById(user,res).then(function(data){
         console.log(data.user);
         res.send(data.user);
     });
 }
 
-var updateUser = function updateUser(email,Key,value,res){
-    userHandler.updateUser(email,Key,value).then(function(data){
+var updateUser = function updateUser(id,Key,value,res){
+    userHandler.updateUser(id,Key,value).then(function(data){
         res.send(data);
     });
 }
 
 var addNewTeam = function addNewTeam (team,res){
-    teamsHandler.addNewNumTeam(20,1).then(function(data){
+    teamsHandler.addNewNumTeam(20).then(function(data){
         res.send(data);
     });
 }
@@ -89,29 +89,32 @@ var getBotSquad = function getBotSquad(req,res){
  }
 
 
-var getInfoByEmail = function getInfoByEmail(email){
+var getInfoById = function getInfoById(id){
     var defer = Promise.defer();
     var results = [];
-    results.push(userHandler.getUserByEmail(email));
-    results.push(teamsHandler.getTeamByEmail(email));
-    results.push(teamsHandler.getTeamsInLeague());
-    results.push(bucketHandler.getBucketByEmail(email));
-    results.push(squadHandler.getSquadByEmail(email));
+    results.push(userHandler.getUserById(id));
+    results.push(teamsHandler.getTeamById(id));
+    results.push([]);
+    results.push(bucketHandler.getBucketById(id));
+    results.push(squadHandler.getSquadById(id));
     results.push(gameManager.getSetup());
     results.push(gameManager.getTimeTillNextMatch());
-    results.push(gameManager.getOpponentByEmail(email));
+    results.push(gameManager.getOpponentById(id));
     Promise.all(results).then(function(data){
         var json = {};
         json["user"] = data[0];
-        json["league"] = data[2];
         json["team"] = data[1].team;
         json["bucket"] = {details:data[3],timeNow: Date.now()};
-        //json["timeNow"] = Date.now();
         json["squad"] = data[4];
         json["settings"] = data[5].pricesAndMultipliers;
         json["timeTillNextMatch"] = data[6];
         json["nextMatch"] = data[7];
-        defer.resolve(json);
+
+        teamsHandler.getTeamsInLeague(data[1].team.league).then(function (leagueData){
+            json["league"] = leagueData;
+            defer.resolve(json)
+        })
+        ;
         //console.log(json);
     })
     return defer.promise;
@@ -132,7 +135,7 @@ var addNewBotSquad = function addNewBotSquad(req,res){
 
 var addValueToTeam = function addValueToTeam(req,res){
     var json = JSON.parse(req);
-    teamsHandler.addValueToTeam(json.email,json.key,json.value).then(function(data){
+    teamsHandler.addValueToTeam(json.id,json.key,json.value).then(function(data){
         res.send(data);
     })
 }
@@ -152,19 +155,19 @@ var executeNextFixture = function executeNextFixture(req,res){
 }
 
 var addCoinMoney = function addCoinMoney(req,res){
-    userHandler.addCoinMoney(req.body.email,req.body.clicks).then(function(data){
+    userHandler.addCoinMoney(req.body.id,req.body.clicks).then(function(data){
         res.send(data);
     });
 }
 
 var boostPlayer = function boostPlayer(req,res){
-    squadHandler.boostPlayer(req.body.email,req.body.id).then(function(data){
+    squadHandler.boostPlayer(req.body.id,req.body.playerId).then(function(data){
        res.send(data);
     });
 }
 
 var upgradeItem = function upgradeItem(req,item,res){
-    userHandler.upgradeItem(req.body.email,item).then(function(data){
+    userHandler.upgradeItem(req.body.id,item).then(function(data){
         res.send(data);
     })
 }
@@ -174,13 +177,13 @@ var getTimeTillNextMatch = function getTimeTillNextMatch(res){
 }
 
 var addMoneyToUser = function addMoneyToUser(req,res){
-    userHandler.addMoneyToUser(req.body.email,parseInt(req.body.money)).then(function(data){
+    userHandler.addMoneyToUser(req.body.id,parseInt(req.body.money)).then(function(data){
         res.send(data);
     });
 }
 
 var collectBucket = function collectBucket(req,res){
-    bucketHandler.collectNowBucket(req.body.email).then(function(data){
+    bucketHandler.collectNowBucket(req.body.id).then(function(data){
         res.send(data);
     });
 }
@@ -196,9 +199,9 @@ module.exports.getTeamByFixtureAndMatch = getTeamByFixtureAndMatch;
 module.exports.generateFixtures = generateFixtures;
 module.exports.addValueToTeam = addValueToTeam;
 module.exports.addNewBotSquad = addNewBotSquad;
-module.exports.getInfoByEmail = getInfoByEmail;
+module.exports.getInfoById = getInfoById;
 module.exports.addNewUser = addNewUser;
-module.exports.getUserByEmail = getUserByEmail;
+module.exports.getUserById = getUserById;
 module.exports.updateUser = updateUser;
 module.exports.addNewTeam = addNewTeam;
 module.exports.getBotTeam = getBotTeam;

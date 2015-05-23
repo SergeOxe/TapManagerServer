@@ -80,8 +80,8 @@ app.post('/upgradeStadium', function(req,res){
     }
 });
 
-app.post('/getInfoByEmail', function (req, res) {
-    reqHandler.getInfoByEmail(req.body.email, res).then(function (data) {
+app.post('/getInfoById', function (req, res) {
+    reqHandler.getInfoById(req.body.id, res).then(function (data) {
         res.send(data);
     });
 });
@@ -96,7 +96,7 @@ app.post('/addMoney' ,function(req, res) {
 
 //------------------------------
 app.post('/getUser', function (req, res) {
-    reqHandler.getUserByEmail(req.body.email,res);
+    reqHandler.getUserById(req.body.id,res);
 });
 //------------------------------------
 app.post('/newTeamUser', function (req, res) {

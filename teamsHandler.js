@@ -3,7 +3,7 @@
  */
 var Promise = require('bluebird');
 var squadHandler = require('./squadHandler');
-
+var gameManager = require('./gameManager');
 var teamsCollection;
 
 
@@ -62,9 +62,14 @@ var addNewTeam = function addNewTeam (body){
 }
 */
 
-var addNewNumTeam = function addNewNumTeam(num,leagueNum){
+var addNewNumTeam = function addNewNumTeam(num){
     var defer = Promise.defer();
     //console.log(body);
+    var leagueNum = gameManager.getNumOfLeagues() + 1;
+    var obj = {};
+    obj["numOfLeagues"] = 1;
+    gameManager.addValueToGameCollection({},obj);
+    gameManager.addNumOfLeagues();
     for (var i = 0 ; i < num ; i++) {
         squadHandler.addNewBotSquad();
         var team = {
@@ -120,7 +125,7 @@ var addNewNumTeam = function addNewNumTeam(num,leagueNum){
                     "crowd": 0
                 }
             },
-            "teamName": "team " + i
+            "teamName": "team " + (leagueNum*20 + i)
         };
         //var user = JSON.parse(body);
         teamsCollection.insert(team, function (err, data) {
@@ -185,16 +190,17 @@ var newTeamUser = function newTeamUser(detailsJson){
     var defer = Promise.defer();
     //var detailsJson = JSON.parse(details);
     var id;
-    getTeamByEmail(detailsJson.email,function(err,data){
+    getTeamById(detailsJson.id,function(err,data){
        if(data){
            console.log("newTeamUser err","teamName Exist");
            defer.resolve("null");
        }
     });
+
     getBotTeam().then(function(data){
         id = data.team._id;
         var obj = {};
-        obj["email"] = detailsJson.email;
+        obj["id"] = detailsJson.id;
         obj["stadiumName"] = detailsJson.stadiumName;
         obj["teamName"] = detailsJson.teamName;
         obj["coachName"] = detailsJson.coachName;
@@ -212,20 +218,20 @@ var newTeamUser = function newTeamUser(detailsJson){
     return defer.promise;
 }
 
-var getTeamByEmail = function getTeamByEmail (email){
+var getTeamById = function getTeamById (id){
     var defer = Promise.defer();
-    teamsCollection.findOne({"email":email},function(err,data){
+    teamsCollection.findOne({id:id},function(err,data){
         if(!data){
-            console.log("getTeamByEmail err",err);
+            console.log("getTeamById err",err);
             defer.resolve({user: "null"});
         }else{
-            //console.log("getTeamByEmail","ok");
+            //console.log("getTeamById","ok");
             defer.resolve({team:data});
         }});
     return defer.promise;
 }
 
-var getTeamByKey = function getTeamByEmail (key){
+var getTeamByKey = function getTeamById (key){
     var defer = Promise.defer();
     teamsCollection.findOne(key,function(err,data){
         if(err){
@@ -238,9 +244,9 @@ var getTeamByKey = function getTeamByEmail (key){
     return defer.promise;
 }
 
-var getTeamsInLeague = function getTeamsInLeague(){
+var getTeamsInLeague = function getTeamsInLeague(league){
     var defer = Promise.defer();
-    teamsCollection.find({},{teamName:1,gamesHistory:1}).toArray(function(err, results){
+    teamsCollection.find({league: league},{teamName:1,gamesHistory:1}).toArray(function(err, results){
         defer.resolve(results);
     });
     return defer.promise;
@@ -282,7 +288,7 @@ var getSortedTeams = function getSortedTeams (leagueNum){
             defer.resolve("null");
         }else{
             //console.log("getSortedTeams","ok")
-            defer.resolve({teams : sortedTeams});
+            defer.resolve(sortedTeams);
         }
     });
     return defer.promise;
@@ -297,7 +303,7 @@ module.exports.updateTeam = updateTeam;
 module.exports.getBotTeam = getBotTeam;
 module.exports.addNewNumTeam = addNewNumTeam;
 module.exports.newTeamUser = newTeamUser;
-module.exports.getTeamByEmail = getTeamByEmail;
+module.exports.getTeamById = getTeamById;
 module.exports.getTeamByKey = getTeamByKey;
 module.exports.getTeamsInLeague = getTeamsInLeague;
 module.exports.setup = setup;

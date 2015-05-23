@@ -20,7 +20,7 @@ var loginUser = function loginUser (body,res){
     var defer = Promise.defer();
     //console.log(body);
     var user = JSON.parse(body);
-    userCollection.findOne({"email":user.email},function(err,data) {
+    userCollection.findOne({id:user.id},function(err,data) {
         if (!data) {
             addNewUser(body).then(function (data) {
                 //console.log("loginUser addUser", "ok");
@@ -28,6 +28,7 @@ var loginUser = function loginUser (body,res){
             console.log("loginUser err", err);
             defer.resolve("null");
         } else {
+            updateUser(user.id,"lastLogin",Date.now());
             console.log("loginUser", "User exist");
             defer.resolve("ok");
         }
@@ -42,10 +43,11 @@ var addNewUser = function addNewUser (body){
     //console.log(body);
     var obj = {
             email:user.email,
-            fbId: user.id,
+            id: user.id,
             name:user.name,
             coinValue: 20000,
-            money:1000000
+            money:1000000,
+            lastLogin : Date.now()
     };
     userCollection.insert(obj,function(err,data){
         if(err){
@@ -58,26 +60,26 @@ var addNewUser = function addNewUser (body){
     return defer.promise;
 }
 
-var getUserByEmail = function getUserByEmail (email){
+var getUserById = function getUserById (id){
     var defer = Promise.defer();
-    var query = {"email" : email}
+    var query = {id : id}
     userCollection.findOne(query,function(err,data){
         if(err){
-            console.log("getUserByEmail error",err);
+            console.log("getUserById error",err);
             defer.resolve("null");
         }else{
-            //console.log("getUserByEmail","ok");
+            //console.log("getUserById","ok");
             defer.resolve(data);
         }});
     return defer.promise;
 }
 
-var updateUser = function updateUser (email,Key,value){
+var updateUser = function updateUser (id,Key,value){
     var defer = Promise.defer();
     //console.log(body);
     var obj = {};
     obj[Key] = value;
-    userCollection.update({"email":email},{$set: obj},function(err,data){
+    userCollection.update({id:id},{$set: obj},function(err,data){
         if(err){
             console.log("updateUser",err);
             defer.resolve(err);
@@ -88,9 +90,9 @@ var updateUser = function updateUser (email,Key,value){
     return defer.promise;
 }
 
-var addMoneyToUser = function addMoneyToUser (email,money){
+var addMoneyToUser = function addMoneyToUser (id,money){
     var defer = Promise.defer();
-    userCollection.update({"email":email},{$inc: {money: money}},function(err,data){
+    userCollection.update({id:id},{$inc: {money: money}},function(err,data){
         if(err){
             console.log("addMoneyToUser",err);
             defer.resolve("null");
@@ -101,11 +103,11 @@ var addMoneyToUser = function addMoneyToUser (email,money){
     return defer.promise;
 }
 
-var addValueToUser = function addValueToUser (email,value){
+var addValueToUser = function addValueToUser (id,value){
     var defer = Promise.defer();
     var obj ={};
     //obj[key] = value;
-    userCollection.update({"email":email},{$inc:value},function(err,data){
+    userCollection.update({id:id},{$inc:value},function(err,data){
         if(err){
             console.log("addMoneyToUser",err);
             defer.resolve("null");
@@ -116,11 +118,11 @@ var addValueToUser = function addValueToUser (email,value){
     return defer.promise;
 }
 
-var upgradeItem = function upgradeFans(email,item) {
+var upgradeItem = function upgradeFans(id,item) {
     var defer = Promise.defer();
     var results = [];
-    results.push(teamsHandler.getTeamByEmail(email));
-    results.push(getUserByEmail(email));
+    results.push(teamsHandler.getTeamById(id));
+    results.push(getUserById(id));
     Promise.all(results).then(function (data) {
         var money = data[1].money;
         var userLevel;
@@ -146,8 +148,8 @@ var upgradeItem = function upgradeFans(email,item) {
         if (money >=  initPrice*Math.pow(multiplier,userLevel)) {
             var promises = [];
             var price = -initPrice*Math.pow(multiplier,userLevel);
-            promises.push(addMoneyToUser(email, price));
-            promises.push(teamsHandler.addValueToTeamMulti({email:email}, obj));
+            promises.push(addMoneyToUser(id, price));
+            promises.push(teamsHandler.addValueToTeamMulti({id:id}, obj));
             Promise.all(promises).then(function (data) {
                 defer.resolve("ok");
             });
@@ -158,11 +160,11 @@ var upgradeItem = function upgradeFans(email,item) {
     return defer.promise;
 }
 
-var addCoinMoney = function addCoinMoney(email,clicks){
+var addCoinMoney = function addCoinMoney(id,clicks){
     var defer = Promise.defer();
-    getUserByEmail(email).then(function(data){
+    getUserById(id).then(function(data){
         var money = clicks * data.coinValue;
-        addMoneyToUser(email,money).then(function(data){
+        addMoneyToUser(id,money).then(function(data){
             defer.resolve("ok");
         })
     });
@@ -176,5 +178,5 @@ module.exports.addNewUser = addNewUser;
 module.exports.addMoneyToUser = addMoneyToUser;
 module.exports.updateUser = updateUser;
 module.exports.loginUser = loginUser;
-module.exports.getUserByEmail = getUserByEmail;
+module.exports.getUserById = getUserById;
 module.exports.setup = setup;

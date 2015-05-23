@@ -14,8 +14,14 @@ var calcResult  = function  calcResult(i_HomeTeam, i_AwayTeam) {
     var randomCrowdMultiplier = randomIntFromInterval(m_MinCrowdMultiplier, m_MaxCrowdMultiplier)/10;
     //float homeTeamOdds = i_HomeTeam.GetWinOdds();
     //float awayTeamOdds = i_AwayTeam.GetWinOdds();
-    var crowdAtMatch =  (GetFanBase(i_HomeTeam) * randomCrowdMultiplier); // / 100000 * randomFansMultiplier;
-    // crowdAtMatch should be bounded by stadium size
+    try
+    {
+        var crowdAtMatch = (GetFanBase(i_HomeTeam) * randomCrowdMultiplier); // / 100000 * randomFansMultiplier;
+        // crowdAtMatch should be bounded by stadium size}
+    }catch (err){
+        console.log("GetFanBase err sent"+ i_HomeTeam , err);
+        return;
+    }
 
     var  outcome = randomIntFromInterval(1, 10) / 10;
     var homeTeamGoals;
@@ -66,6 +72,7 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
     var updateValue = {};
     var addValue = {};
     if (i_result == 0) {
+        addValue["gamesHistory.thisSeason.points"] = 3;
         addValue["gamesHistory.thisSeason.wins"] = 1;
         addValue["gamesHistory.allTime.wins"] = 1;
         addValue["statistics.currentWinStreak"] = 1;
@@ -79,7 +86,7 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
 
     }else if (i_result == 1) {
         addValue["gamesHistory.thisSeason.losts"] = 1;
-        addValue["gamesHistory.allTime.lost"] = 1;
+        addValue["gamesHistory.allTime.losts"] = 1;
         addValue["statistics.currentLoseStreak"] = 1;
         addValue["statistics.currentWinlessStreak"] = 1;
         if (team.gamesHistory.thisSeason.crowd - 10 > 0) {
@@ -93,6 +100,7 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         updateValue["statistics.currentUndefeatedStreak"] = 0;
 
     }else {
+        addValue["gamesHistory.thisSeason.points"] = 1;
         addValue["gamesHistory.thisSeason.draws"] = 1;
         addValue["gamesHistory.allTime.draws"] = 1;
         addValue["statistics.currentUndefeatedStreak"] = 1;

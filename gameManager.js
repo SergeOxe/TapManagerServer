@@ -6,7 +6,7 @@ var matchManager = require("./matchManager");
 var Promise = require('bluebird');
 
 var m_currentFixture;
-var sortedTeams;
+var sortedTeams = [[],[]];
 
 var m_fixturesLists;
 var gameManagerCollection;
@@ -19,12 +19,14 @@ var stadiumMultiplier;
 var multiplierBoost;
 var lastGame;
 var timeIntervalInHours;
+var numOfLeagues;
 
 var setup = function setup(db){
     var defer = Promise.defer();
-    teamsHandler.getSortedTeams(1).then(function (data) {
-        sortedTeams = data.teams;
-    });
+    var leagues = [];
+    //teamsHandler.getSortedTeams(1).then(function (data) {
+        //sortedTeams = data.teams;
+    //});
     db.collection("GameManager",function(err, data) {
         if(!err) {
             gameManagerCollection = data;
@@ -45,9 +47,19 @@ var setup = function setup(db){
         multiplierBoost = data.pricesAndMultipliers.multiplierBoost;
         lastGame = data.lastGame;
         timeIntervalInHours = data.timeIntervalInHours;
-        defer.resolve("ok");
+        numOfLeagues = data.numOfLeagues;
         lastGame = Date.now();
+        leagues.push([]);
+        for (var  i = 1; i <= numOfLeagues ; i++){
+            leagues.push(teamsHandler.getSortedTeams(i));
+        };
+
+        Promise.all(leagues).then(function(data){
+            sortedTeams = data;
+            //console.log(sortedTeams[0]);
+        });
         executeGames();
+        defer.resolve("ok");
     });
 
     return defer.promise;
@@ -86,7 +98,7 @@ function getLeagueSetup() {
         if (data == null) {
             console.log("getLeagueSetup err", err);
             var doc = {currentFixture : 1,
-                        numOfLeagues: 1,
+                        numOfLeagues: 0,
                         lastGame: Date.now(),
                         timeIntervalInHours : 0.0833,
                         fixturesLists : generateFixtures(),
@@ -136,7 +148,7 @@ function addValueToGameCollection (findBy,obj){
     return defer.promise;
 }
 
-function updateGamesCollection (findBy,obj){
+var updateGamesCollection = function updateGamesCollection (findBy,obj){
     var defer = Promise.defer();
     gameManagerCollection.update(findBy,{$set: obj},function(err,data){
         if(!data){
@@ -254,32 +266,33 @@ function getTotalNumOfFixtures(){
 }
 
 var executeNextFixture = function  executeNextFixture(res){
-    teamsHandler.getSortedTeams(1).then(function (data) {
-        sortedTeams = data.teams;
 
-        var v_IsHomeTeam = true;
-        // Validate not end of season
-        if (m_currentFixture == getTotalNumOfFixtures()){
-            //End of season logic should be here
-            return;
-        }
+    var v_IsHomeTeam = true;
+    // Validate not end of season
+    if (m_currentFixture == getTotalNumOfFixtures()){
+        console.log("End Of season");
+        //End of season logic should be here
+        return;
+    }
+    for(var j = 1 ; j <= numOfLeagues ; j++){
+        var sortedTeamsLeague = sortedTeams[j];
         for (var i = 0; i < getMatchesPerFixture(); i++){
             var team1 = getTeamByFixtureAndMatch(m_currentFixture, i, v_IsHomeTeam);
             var team2 = getTeamByFixtureAndMatch(m_currentFixture, i, !v_IsHomeTeam);
-            var teamObj1 = sortedTeams[team1];
-            var teamObj2 = sortedTeams[team2];
+            var teamObj1 = sortedTeamsLeague[team1];
+            var teamObj2 = sortedTeamsLeague[team2];
             matchManager.calcResult(teamObj1,teamObj2);
         }
-        var curr = {};
-        curr["currentFixture"] = 1;
-        addValueToGameCollection({},curr);
-        m_currentFixture++;
-        lastGame = Date.now();
-        console.log("executeNextFixture","ok");
-    //if (!res) {
-        //res.send("ok");
-    //}
-    });
+    }
+    var curr = {};
+    curr["currentFixture"] = 1;
+    addValueToGameCollection({},curr);
+    m_currentFixture++;
+    lastGame = Date.now();
+    console.log("executeNextFixture","ok");
+//if (!res) {
+    //res.send("ok");
+//}
 }
 
 function  GetOpponentByTeamAndFixture( i_Team,  i_Fixture){
@@ -302,10 +315,14 @@ function  GetOpponentByTeam( i_Team) {
     return GetOpponentByTeamAndFixture(i_Team,m_currentFixture);
 }
 
-var getIndexOfTeamByEmail = function getIndexOfTeamByEmail(email){
+var getIndexOfTeamById = function getIndexOfTeamById(id){
     var defer = Promise.defer();
     var index;
-    teamsHandler.getTeamByEmail(email).then(function(data){
+    teamsHandler.getTeamById(id).then(function(data){
+        if (data.team == "null"){
+            defer.resolve(getIndexOfTeamById,"null");
+            return;
+        }
         var id = data.team._id;
         for (var i = 0 ; i < sortedTeams.length ; i++){
             if (String(sortedTeams[i]._id).valueOf() == String(id).valueOf()){
@@ -346,20 +363,27 @@ var getStadiumMultiplier = function getStadiumMultiplier(){
     return stadiumMultiplier;
 }
 
+var getNumOfLeagues = function getNumOfLeagues(){
+    return numOfLeagues;
+}
+
+var addNumOfLeagues = function addNumOfLeagues(){
+    numOfLeagues++;
+}
 var getTimeTillNextMatch = function getTimeTillNextMatch(){
     return  (timeIntervalInHours*3600000) - (Date.now() - lastGame);
 }
 
-var getOpponentByEmail = function getOpponentByEmail( email) {
+var getOpponentById = function getOpponentById( id) {
     var defer = Promise.defer();
-    getIndexOfTeamByEmail(email).then(function(data){
+    getIndexOfTeamById(id).then(function(data){
         defer.resolve(GetOpponentByTeamAndFixture(data,m_currentFixture));
     });
     return defer.promise;
 }
 
 
-module.exports.getOpponentByEmail = getOpponentByEmail;
+module.exports.getOpponentById = getOpponentById;
 module.exports.getTimeTillNextMatch = getTimeTillNextMatch;
 module.exports.executeNextFixture = executeNextFixture;
 module.exports.getTeamByFixtureAndMatch = getTeamByFixtureAndMatch;
@@ -372,3 +396,7 @@ module.exports.getInitPriceOfStadium = getInitPriceOfStadium;
 module.exports.getFansMultiplier = getFansMultiplier;
 module.exports.getFacilitiesMultiplier = getFacilitiesMultiplier;
 module.exports.getStadiumMultiplier = getStadiumMultiplier;
+module.exports.getNumOfLeagues = getNumOfLeagues;
+module.exports.addNumOfLeagues = addNumOfLeagues;
+module.exports.addValueToGameCollection = addValueToGameCollection;
+module.exports.updateGamesCollection = updateGamesCollection

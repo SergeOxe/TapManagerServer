@@ -26,9 +26,9 @@ var addNewBucket = function addNewBucket (user,res){
         "maxAmount": 11000,
         "lastFlush": Date.now(),
         "level": 0,
-        "email":user.email};
+        "id":user.id};
 
-    bucketCollection.findOne({"email":user.email},function(err,data) {
+    bucketCollection.findOne({id:user.id},function(err,data) {
         if (!data) {
             bucketCollection.insert(bucket,function(err,data){
                 if (!err) {
@@ -46,25 +46,25 @@ var addNewBucket = function addNewBucket (user,res){
     return defer.promise;
 }
 
-var getBucketByEmail = function getBucketByEmail (email){
+var getBucketById = function getBucketById (id){
     var defer = Promise.defer();
-    bucketCollection.findOne({"email":email},function(err,data){
+    bucketCollection.findOne({id:id},function(err,data){
         if(err){
-            console.log("getBucketByEmail",err);
+            console.log("getBucketById",err);
             defer.resolve("null");
         }else{
-            //console.log("getBucketByEmail",'ok');
+            //console.log("getBucketById",'ok');
             defer.resolve(data);
         }});
     return defer.promise;
 }
 
-var updateBucket = function updateBucket (email,Key,value,res){
+var updateBucket = function updateBucket (id,Key,value,res){
     var defer = Promise.defer();
     //console.log(body);
     var obj = {};
     obj[Key] = value;
-    bucketCollection.update({"email":email},{$set: obj},function(err,data){
+    bucketCollection.update({id:id},{$set: obj},function(err,data){
         if(err){
             console.log("updateBucket",err);
             defer.resolve(err);
@@ -75,9 +75,9 @@ var updateBucket = function updateBucket (email,Key,value,res){
     return defer.promise;
 }
 
-var addLevelToBucket = function updateUser (email,money){
+var addLevelToBucket = function updateUser (id,money){
     var defer = Promise.defer();
-    bucketCollection.update({"email":email},{$inc: {level: 1}},function(err,data){
+    bucketCollection.update({id:id},{$inc: {level: 1}},function(err,data){
         if(err){
             console.log("addLevelToBucket",err);
             defer.resolve("null");
@@ -88,13 +88,13 @@ var addLevelToBucket = function updateUser (email,money){
     return defer.promise;
 }
 
-var collectNowBucket = function collectNowBucket(email){
+var collectNowBucket = function collectNowBucket(id){
     var defer = Promise.defer();
     var results = [];
-    getBucketByEmail(email).then(function(data){
+    getBucketById(id).then(function(data){
         if(Date.now() - data.lastFlush >= HOURS * 3600000){
-            results.push(userHandler.addMoneyToUser(email,data.maxAmount));
-            results.push(updateBucket(email,"lastFlush",Date.now()));
+            results.push(userHandler.addMoneyToUser(id,data.maxAmount));
+            results.push(updateBucket(id,"lastFlush",Date.now()));
             Promise.all(results).then(function(data){
                 if(data[0] == "null" || data[1] == "null"){
                     defer.resolve("null");
@@ -112,5 +112,5 @@ var collectNowBucket = function collectNowBucket(email){
 module.exports.collectNowBucket = collectNowBucket;
 module.exports.updateBucket = updateBucket;
 module.exports.addNewBucket = addNewBucket;
-module.exports.getBucketByEmail = getBucketByEmail;
+module.exports.getBucketById = getBucketById;
 module.exports.setup = setup;

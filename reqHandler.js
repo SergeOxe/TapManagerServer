@@ -21,13 +21,24 @@ MongoClient.connect("mongodb://localhost:27017", function(err, data) {
     userHandler.setup(db);
     teamsHandler.setup(db);
     bucketHandler.setup(db);
+    leagueHandler.setup(db);
     gameManager.setup(db).then(function(data){
         console.log("gameManager.setup","ok");
     });
-    //leagueHandler.setup(db);
+
 });
 
+var gameManagerSetup = function gameManagerSetup(){
+    gameManager.setup(db);
+}
 
+var deleteDB = function deleteDB(){
+    gameManager.deleteDB();
+    teamsHandler.deleteDB();
+    squadHandler.deleteDB();
+    bucketHandler.deleteDB();
+    userHandler.deleteDB();
+}
 
 var loginUser = function loginUser (user,res){
     userHandler.loginUser(user).then(function(data){
@@ -77,8 +88,9 @@ var getBotSquad = function getBotSquad(req,res){
     })
 }
 
- var newTeamUser = function newTeamUser(details,res){
+ var newUser = function newUser(details,res){
      var results = [];
+     results.push(userHandler.addNewUser(details));
      results.push(teamsHandler.newTeamUser(details));
      results.push(bucketHandler.addNewBucket(details));
      results.push(squadHandler.newSquadForUser(details));
@@ -188,13 +200,14 @@ var collectBucket = function collectBucket(req,res){
     });
 }
 
+module.exports.deleteDB = deleteDB;
 module.exports.collectBucket = collectBucket;
 module.exports.addMoneyToUser = addMoneyToUser;
 module.exports.getTimeTillNextMatch = getTimeTillNextMatch;
 module.exports.upgradeItem = upgradeItem;
 module.exports.boostPlayer = boostPlayer;
 module.exports.executeNextFixture = executeNextFixture;
-module.exports.addCoinMoney =addCoinMoney;
+module.exports.addCoinMoney = addCoinMoney;
 module.exports.getTeamByFixtureAndMatch = getTeamByFixtureAndMatch;
 module.exports.generateFixtures = generateFixtures;
 module.exports.addValueToTeam = addValueToTeam;
@@ -206,7 +219,9 @@ module.exports.updateUser = updateUser;
 module.exports.addNewTeam = addNewTeam;
 module.exports.getBotTeam = getBotTeam;
 module.exports.getBotSquad = getBotSquad;
-module.exports.newTeamUser = newTeamUser;
+module.exports.newUser = newUser;
 module.exports.getTeamsInLeague = getTeamsInLeague;
 module.exports.addNewBucket = addNewBucket;
 module.exports.loginUser = loginUser;
+
+module.exports.gameManagerSetup = gameManagerSetup;

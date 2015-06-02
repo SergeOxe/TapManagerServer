@@ -210,7 +210,7 @@ var newSquadForUser = function newSquadForUser (detailsJson,res){
         }
         id = data.squad._id;
         var obj = {};
-        obj["email"] = detailsJson.email;
+        obj["id"] = detailsJson.id;
         obj["isBot"] = false;
         squadCollection.update({"_id":id},{$set: obj},function(err,data){
             if(!data){
@@ -226,11 +226,11 @@ var newSquadForUser = function newSquadForUser (detailsJson,res){
 
 }
 
-var addNewBotSquad =  function addNewBotSquad(){
+var addNewBotSquad =  function addNewBotSquad(id){
     var defer = Promise.defer();
     var year =new Date().getFullYear();
     var players = [];
-    var obj = { "email" : "", "isBot" : true};
+    var obj = { "id" : id, "isBot" : true};
     for (var i = 0; i < 15 ; i++){
        var player = {
             "id" : i,
@@ -291,14 +291,14 @@ var addNewBotSquad =  function addNewBotSquad(){
     return defer.promise;
 }
 
-var getSquadByEmail = function getSquadByEmail (email){
+var getSquadById = function getSquadById (id){
     var defer = Promise.defer();
-    squadCollection.findOne({"email":email},function(err,data){
+    squadCollection.findOne({"id":id},function(err,data){
         if(err){
-            console.log("getSquadByEmail err",err);
-            defer.resolve({user: "null"});
+            console.log("getSquadById err",err);
+            defer.resolve("null");
         }else{
-            console.log("getSquadByEmail","ok");
+            //console.log("getSquadById","ok");
             defer.resolve(data);
         }});
     return defer.promise;
@@ -320,11 +320,11 @@ function getRandomLastName(){
     return name;
 }
 
-function boostPlayer(email,indexPlayer){
+function boostPlayer(id,indexPlayer){
     var defer = Promise.defer();
     var results = [];
-    results.push(getSquadByEmail(email));
-    results.push(userHandler.getUserByEmail(email));
+    results.push(getSquadById(id));
+    results.push(userHandler.getUserById(id));
     Promise.all(results).then(function(data){
         var money = data[1].money;
         var player = data[0].players[indexPlayer];
@@ -332,7 +332,7 @@ function boostPlayer(email,indexPlayer){
         var obj = {};
         var promises = [];
         var find = {};
-        find["email"] = email;
+        find["id"] = id;
         if (money >= player.priceToBoost){
             if(player.boost + player.currentBoost >= player.nextBoost){
                 obj["players."+indexPlayer +".currentBoost"] =  (player.boost + player.currentBoost)%player.nextBoost;
@@ -343,7 +343,7 @@ function boostPlayer(email,indexPlayer){
             }else{
                 obj["players."+indexPlayer +".currentBoost"] =  player.boost + player.currentBoost;
             }
-            promises.push(userHandler.addMoneyToUser(email,-player.priceToBoost));
+            promises.push(userHandler.addMoneyToUser(id,-player.priceToBoost));
             promises.push(updateSquad(find,obj));
             Promise.all(promises).then(function(data){
                 if (data == "null"){
@@ -359,11 +359,74 @@ function boostPlayer(email,indexPlayer){
     return defer.promise;
 }
 
-var addValueToSquad = function addValueToSquad (email,key,value){
+
+var addBoostToAllPlayers = function addBoostToAllPlayers(id) {
+    var defer = Promise.defer();
+    var find = {};
+    find["id"] = id;
+    var obj = {};
+    getSquadById(id).then(function (data) {
+        //console.log(data);
+        for (var i = 0; i < data.players.length; i++) {
+            var player = data.players[i];
+            var nextBoost = player.nextBoost;
+            if (player.boost + player.currentBoost >= player.nextBoost) {
+                obj["players." + i + ".currentBoost"] = (player.boost + player.currentBoost) % player.nextBoost;
+                obj["players." + i + ".nextBoost"] = player.nextBoost * 2;
+                obj["players." + i + ".priceToBoost"] = player.priceToBoost * gameManager.getMultiplierBoost();
+                obj["players." + i + ".level"] = player.level + 1;
+            } else {
+                obj["players." + i + ".currentBoost"] = player.boost + player.currentBoost;
+            }
+        }
+        updateSquad(find,obj).then(function (res) {
+            defer.resolve("ok");
+        });
+    });
+    return defer.promise;
+}
+
+var getAllSquadSalaryById = function getAllSquadSalaryById(id) {
+    var defer = Promise.defer();
+    var find = {};
+    var salary = 0;
+    find["id"] = id;
+    getSquadById(id).then(function (data) {
+        if (data == "null"){
+            defer.resolve("null");
+            return;
+        }
+        data.players.forEach(function (player) {
+            salary += player.salary;
+        });
+        defer.resolve(salary);
+    });
+    return defer.promise;
+}
+
+var getAllSquadRatingById = function getAllSquadRatingById(id) {
+    var defer = Promise.defer();
+    var find = {};
+    var level = 0;
+    find["id"] = id;
+    getSquadById(id).then(function (data) {
+        if (data == "null"){
+            defer.resolve(randomIntFromInterval(45,120));
+            return;
+        }
+        data.players.forEach(function (player) {
+            level += player.level;
+        });
+        defer.resolve(level);
+    });
+    return defer.promise;
+}
+
+var addValueToSquad = function addValueToSquad (id,key,value){
     var defer = Promise.defer();
     var obj ={};
     obj[key] = value;
-    userCollection.update({"email":email},{$inc:obj},function(err,data){
+    userCollection.update({"id":id},{$inc:obj},function(err,data){
         if(err){
             console.log("addValueToSquad",err);
             defer.resolve("null");
@@ -393,9 +456,19 @@ function randomIntFromInterval(min,max) {
     return Math.floor(Math.random()*(max-min+1)+min);
 }
 
+var deleteDB = function deleteDB(){
+    squadCollection.remove({},function(err,data){
+
+    });
+}
+
+module.exports.deleteDB = deleteDB;
+module.exports.getAllSquadRatingById = getAllSquadRatingById;
+module.exports.getAllSquadSalaryById = getAllSquadSalaryById;
+module.exports.addBoostToAllPlayers = addBoostToAllPlayers;
 module.exports.boostPlayer = boostPlayer;
 module.exports.setup = setup;
 module.exports.newSquadForUser = newSquadForUser;
 module.exports.addNewBotSquad = addNewBotSquad;
 module.exports.getBotSquad = getBotSquad;
-module.exports.getSquadByEmail = getSquadByEmail;
+module.exports.getSquadById = getSquadById;

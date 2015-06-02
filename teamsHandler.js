@@ -4,6 +4,7 @@
 var Promise = require('bluebird');
 var squadHandler = require('./squadHandler');
 var gameManager = require('./gameManager');
+var reqHandler = require('./reqHandler');
 var teamsCollection;
 
 
@@ -71,7 +72,7 @@ var addNewNumTeam = function addNewNumTeam(num){
     gameManager.addValueToGameCollection({},obj);
     gameManager.addNumOfLeagues();
     for (var i = 0 ; i < num ; i++) {
-        squadHandler.addNewBotSquad();
+        squadHandler.addNewBotSquad(((leagueNum - 1)*20 + i));
         var team = {
             "shop" : {
                 "fansLevel": 0,
@@ -125,7 +126,8 @@ var addNewNumTeam = function addNewNumTeam(num){
                     "crowd": 0
                 }
             },
-            "teamName": "team " + (leagueNum*20 + i)
+            "teamName": "team " + ((leagueNum - 1)*20 + i),
+            "id": ((leagueNum - 1)*20 + i)
         };
         //var user = JSON.parse(body);
         teamsCollection.insert(team, function (err, data) {
@@ -133,10 +135,11 @@ var addNewNumTeam = function addNewNumTeam(num){
                 console.log("addNewTeam", err);
                 defer.resolve("null");
             } else {
-                //console.log("addNewTeam", "Ok");
+                //console.log("addNewTeam", data);
                 defer.resolve("ok");
             }
         });
+        //reqHandler.gameManagerSetup();
     }
     return defer.promise;
 }
@@ -186,6 +189,24 @@ var updateTeamMulti = function updateTeamMulti (findBy,obj){
     return defer.promise;
 }
 
+/*
+var addBoostToAllPlayers = function addBoostToAllPlayers(id){
+    var defer = Promise.defer();
+    var results = [];
+    results.push(squadHandler.getSquadByEmail(id));
+    results.push(getTeamById(id));
+    Promise.all(results).then(function(data){
+        var facilities = data[1].shop.facilitiesLevel;
+        for(var i = 0 ; i < 11 ; i++) {
+            squadHandler.boostPlayer()
+        }
+
+    });
+
+
+    return defer.promise;
+}
+*/
 var newTeamUser = function newTeamUser(detailsJson){
     var defer = Promise.defer();
     //var detailsJson = JSON.parse(details);
@@ -203,7 +224,7 @@ var newTeamUser = function newTeamUser(detailsJson){
         obj["id"] = detailsJson.id;
         obj["stadiumName"] = detailsJson.stadiumName;
         obj["teamName"] = detailsJson.teamName;
-        obj["coachName"] = detailsJson.coachName;
+        obj["coachName"] = detailsJson.name;
         obj["isBot"] = false;
         teamsCollection.update({"_id":id},{$set: obj},function(err,data){
             if(!data){
@@ -294,8 +315,28 @@ var getSortedTeams = function getSortedTeams (leagueNum){
     return defer.promise;
 }
 
+var getSortedTeamsByPoints = function getSortedTeamsByPoints (leagueNum){
+    //Need to handle goal difference.
+    var defer = Promise.defer();
+    teamsCollection.find({league: leagueNum}).sort({"gamesHistory.thisSeason.points": -1}).toArray(function(err,sortedTeams) {
+        if (!sortedTeams) {
+            console.log("getSortedTeamsByPoints err",err)
+            defer.resolve("null");
+        }else{
+            //console.log("getSortedTeamsByPoints","ok")
+            defer.resolve(sortedTeams);
+        }
+    });
+    return defer.promise;
+}
+var deleteDB = function deleteDB(){
+    teamsCollection.remove({},function(err,data){
+    });
+}
 
-module.exports.addValueToTeamMulti = addValueToTeamMulti
+module.exports.deleteDB = deleteDB;
+module.exports.getSortedTeamsByPoints = getSortedTeamsByPoints;
+module.exports.addValueToTeamMulti = addValueToTeamMulti;
 module.exports.updateTeamMulti = updateTeamMulti;
 module.exports.getSortedTeams = getSortedTeams;
 module.exports.addValueToTeam = addValueToTeam;

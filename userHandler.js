@@ -18,13 +18,13 @@ var setup = function setup(db){
 
 var loginUser = function loginUser (body,res){
     var defer = Promise.defer();
-    //console.log(body);
     var user = JSON.parse(body);
+
     userCollection.findOne({id:user.id},function(err,data) {
         if (!data) {
-            addNewUser(body).then(function (data) {
+            //addNewUser(body).then(function (data) {
                 //console.log("loginUser addUser", "ok");
-            });
+            //});
             console.log("loginUser err", err);
             defer.resolve("null");
         } else {
@@ -39,12 +39,10 @@ var loginUser = function loginUser (body,res){
 
 var addNewUser = function addNewUser (body){
     var defer = Promise.defer();
-    var user = JSON.parse(body);
-    //console.log(body);
     var obj = {
-            email:user.email,
-            id: user.id,
-            name:user.name,
+            //email:user.email,
+            id: body.id,
+            name:body.name,
             coinValue: 20000,
             money:1000000,
             lastLogin : Date.now()
@@ -55,6 +53,8 @@ var addNewUser = function addNewUser (body){
             defer.resolve("null");
         }else{
             //console.log("addNewTeam","Ok");
+
+            gameManager.addValueToGameCollection({},{"users" : 1});
             defer.resolve("ok");
         }});
     return defer.promise;
@@ -171,6 +171,12 @@ var addCoinMoney = function addCoinMoney(id,clicks){
     return defer.promise;
 }
 
+var deleteDB = function deleteDB(){
+    userCollection.remove({},function(err,data){
+    });
+}
+
+module.exports.deleteDB = deleteDB;
 module.exports.addMoneyToUser = addMoneyToUser;
 module.exports.upgradeItem = upgradeItem;
 module.exports.addCoinMoney = addCoinMoney;

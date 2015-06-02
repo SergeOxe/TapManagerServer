@@ -109,6 +109,12 @@ var collectNowBucket = function collectNowBucket(id){
     })
     return defer.promise;
 }
+var deleteDB = function deleteDB(){
+    bucketCollection.remove({},function(err,data){
+    });
+}
+
+module.exports.deleteDB = deleteDB;
 module.exports.collectNowBucket = collectNowBucket;
 module.exports.updateBucket = updateBucket;
 module.exports.addNewBucket = addNewBucket;

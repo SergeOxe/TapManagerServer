@@ -3,10 +3,11 @@
  */
 var teamsHandler = require("./teamsHandler");
 var matchManager = require("./matchManager");
+var endOfSeason = require("./endOfSeason");
 var Promise = require('bluebird');
 
 var m_currentFixture;
-var sortedTeams = [[],[]];
+//var sortedTeams = [[],[]];
 
 var m_fixturesLists;
 var gameManagerCollection;
@@ -17,16 +18,19 @@ var fansMultiplier;
 var facilitiesMultiplier;
 var stadiumMultiplier;
 var multiplierBoost;
+var ticketPrice;
+var facilitiesFinanceMultiplier;
+var stadiumFinanceMultiplier;
+var merchandisePrice;
+
 var lastGame;
 var timeIntervalInHours;
 var numOfLeagues;
 
 var setup = function setup(db){
     var defer = Promise.defer();
-    var leagues = [];
-    //teamsHandler.getSortedTeams(1).then(function (data) {
-        //sortedTeams = data.teams;
-    //});
+    //var leagues = [];
+
     db.collection("GameManager",function(err, data) {
         if(!err) {
             gameManagerCollection = data;
@@ -45,10 +49,16 @@ var setup = function setup(db){
         facilitiesMultiplier = data.pricesAndMultipliers.facilitiesMultiplier;
         stadiumMultiplier = data.pricesAndMultipliers.stadiumMultiplier;
         multiplierBoost = data.pricesAndMultipliers.multiplierBoost;
+        ticketPrice = data.financeMultipliers.ticketPrice;
+        facilitiesFinanceMultiplier = data.financeMultipliers.facilitiesMultiplier;
+        stadiumFinanceMultiplier = data.financeMultipliers.stadiumMultiplier;
+        merchandisePrice = data.financeMultipliers.merchandisePrice;
+
         lastGame = data.lastGame;
         timeIntervalInHours = data.timeIntervalInHours;
         numOfLeagues = data.numOfLeagues;
         lastGame = Date.now();
+        /*
         leagues.push([]);
         for (var  i = 1; i <= numOfLeagues ; i++){
             leagues.push(teamsHandler.getSortedTeams(i));
@@ -56,8 +66,11 @@ var setup = function setup(db){
 
         Promise.all(leagues).then(function(data){
             sortedTeams = data;
-            //console.log(sortedTeams[0]);
+            //console.log(sortedTeams[2]);
         });
+        */
+
+        console.log("setup ok");
         executeGames();
         defer.resolve("ok");
     });
@@ -97,9 +110,10 @@ function getLeagueSetup() {
     gameManagerCollection.findOne({}, function (err, data) {
         if (data == null) {
             console.log("getLeagueSetup err", err);
-            var doc = {currentFixture : 1,
+            var doc = {currentFixture : 0,
                         numOfLeagues: 0,
                         lastGame: Date.now(),
+                        users: 0,
                         timeIntervalInHours : 0.0833,
                         fixturesLists : generateFixtures(),
                         pricesAndMultipliers:{
@@ -110,7 +124,13 @@ function getLeagueSetup() {
                             fansMultiplier: 1.8,
                             facilitiesMultiplier: 2.25,
                             stadiumMultiplier:4
-                            }
+                            },
+                        financeMultipliers:{
+                            ticketPrice: 7,
+                            facilitiesMultiplier: 4000,
+                            stadiumMultiplier:10000,
+                            merchandisePrice: 5
+                        }
                         };
             insertToGameCollection(doc).then(function(data){});
             defer.resolve(doc);
@@ -237,10 +257,9 @@ var generateFixtures = function generateFixtures(){
 }
 
 var getTeamByFixtureAndMatch = function getTeamByFixtureAndMatch(i_Fixture, i_Match, i_IsHomeTeam){
-    //var m_FixturesList = generateFixtures();
     var fixturesPerRound = 19;
-    var matchesPerFixture = 10;
-    if (i_Fixture + 1 > fixturesPerRound * 2 || i_Match + 1 > matchesPerFixture) {
+    var matchesPerFixture = getMatchesPerFixture();
+    if (i_Fixture  > fixturesPerRound * 2 || i_Match + 1 > matchesPerFixture) {
         return null;
     }
 
@@ -266,24 +285,32 @@ function getTotalNumOfFixtures(){
 }
 
 var executeNextFixture = function  executeNextFixture(res){
-
     var v_IsHomeTeam = true;
     // Validate not end of season
     if (m_currentFixture == getTotalNumOfFixtures()){
         console.log("End Of season");
         //End of season logic should be here
+        endOfSeason.endOfSeason();
         return;
     }
-    for(var j = 1 ; j <= numOfLeagues ; j++){
-        var sortedTeamsLeague = sortedTeams[j];
-        for (var i = 0; i < getMatchesPerFixture(); i++){
-            var team1 = getTeamByFixtureAndMatch(m_currentFixture, i, v_IsHomeTeam);
-            var team2 = getTeamByFixtureAndMatch(m_currentFixture, i, !v_IsHomeTeam);
-            var teamObj1 = sortedTeamsLeague[team1];
-            var teamObj2 = sortedTeamsLeague[team2];
-            matchManager.calcResult(teamObj1,teamObj2);
+    var leagues = [];
+    leagues.push([]);
+    for (var  i = 1; i <= numOfLeagues ; i++){
+        leagues.push(teamsHandler.getSortedTeams(i));
+    };
+    Promise.all(leagues).then(function (sortedTeams) {
+        for (var j = 1; j <= numOfLeagues; j++) {
+            var sortedTeamsLeague = sortedTeams[j];
+            //console.log(sortedTeamsLeague);
+            for (var i = 0; i < getMatchesPerFixture(); i++) {
+                var team1 = getTeamByFixtureAndMatch(m_currentFixture, i, v_IsHomeTeam);
+                var team2 = getTeamByFixtureAndMatch(m_currentFixture, i, !v_IsHomeTeam);
+                var teamObj1 = sortedTeamsLeague[team1];
+                var teamObj2 = sortedTeamsLeague[team2];
+                matchManager.calcResult(teamObj1, teamObj2);
+            }
         }
-    }
+    });
     var curr = {};
     curr["currentFixture"] = 1;
     addValueToGameCollection({},curr);
@@ -295,24 +322,35 @@ var executeNextFixture = function  executeNextFixture(res){
 //}
 }
 
-function  GetOpponentByTeamAndFixture( i_Team,  i_Fixture){
-    var v_IsHomeTeam = true;
-    for (var i = 0; i < getMatchesPerFixture(); i++){
-        if (getTeamByFixtureAndMatch(i_Fixture, i, v_IsHomeTeam) == i_Team) {
-            return {opponent :sortedTeams[getTeamByFixtureAndMatch(i_Fixture, i, !v_IsHomeTeam)].teamName,
-                    isHomeMatch:true};
+function  GetOpponentByTeamAndFixture( indexAndLeague,  i_Fixture){
+    var defer = Promise.defer();
+    teamsHandler.getSortedTeams(indexAndLeague.league).then(function(sortedLeague){
+        //var sortedLeague = sortedTeams[indexAndLeague.league];
+        var v_IsHomeTeam = true;
+        for (var i = 0; i < getMatchesPerFixture(); i++){
+            if (getTeamByFixtureAndMatch(i_Fixture, i, v_IsHomeTeam) == indexAndLeague.index) {
+                defer.resolve({opponent :sortedLeague[getTeamByFixtureAndMatch(i_Fixture, i, !v_IsHomeTeam)].teamName,
+                        isHomeMatch:true});
+            }
+            if (getTeamByFixtureAndMatch(i_Fixture, i, !v_IsHomeTeam) == indexAndLeague.index) {
+                defer.resolve({opponent : sortedLeague[getTeamByFixtureAndMatch(i_Fixture, i, v_IsHomeTeam)].teamName,
+                        isHomeMatch:false});
+            }
         }
-        if (getTeamByFixtureAndMatch(i_Fixture, i, !v_IsHomeTeam) == i_Team) {
-            return{opponent : sortedTeams[getTeamByFixtureAndMatch(i_Fixture, i, v_IsHomeTeam)].teamName,
-                    isHomeMatch:false};
-        }
-    }
-    console.log("Could not find team in fixture list!");
+        console.log("Could not find team in fixture list!");
+        defer.resolve({opponent : "You have not played a game yet",
+            isHomeMatch:false});
+    });
+    return defer.promise;
 }
 
 function  GetOpponentByTeam( i_Team) {
+    var defer = Promise.defer();
     console.log("GetOpponentByTeam");
-    return GetOpponentByTeamAndFixture(i_Team,m_currentFixture);
+    GetOpponentByTeamAndFixture(i_Team,m_currentFixture).then(function(data){
+        defer.resolve(data);
+    });
+    return defer.promise;
 }
 
 var getIndexOfTeamById = function getIndexOfTeamById(id){
@@ -320,17 +358,20 @@ var getIndexOfTeamById = function getIndexOfTeamById(id){
     var index;
     teamsHandler.getTeamById(id).then(function(data){
         if (data.team == "null"){
-            defer.resolve(getIndexOfTeamById,"null");
+            defer.resolve("getIndexOfTeamById","null");
             return;
         }
         var id = data.team._id;
-        for (var i = 0 ; i < sortedTeams.length ; i++){
-            if (String(sortedTeams[i]._id).valueOf() == String(id).valueOf()){
-                defer.resolve(i);
-                break;
+        //var league = sortedTeams[data.team.league];
+        teamsHandler.getSortedTeams(data.team.league).then(function(league){
+            for (var i = 0 ; i < league.length ; i++){
+                if (String(league[i]._id).valueOf() == String(id).valueOf()){
+                    defer.resolve({index : i, league : data.team.league});
+                    break;
+                }
             }
-        }
-        defer.resolve("null");
+            defer.resolve("null");
+        });
     });
     return defer.promise;
 }
@@ -352,11 +393,11 @@ var getInitPriceOfStadium = function getInitPriceOfStadium(){
 }
 
 var getFansMultiplier = function getFansMultiplier(){
-    return multiplierBoost;
+    return fansMultiplier;
 }
 
 var getFacilitiesMultiplier = function getFacilitiesMultiplier(){
-    return multiplierBoost;
+    return facilitiesMultiplier;
 }
 
 var getStadiumMultiplier = function getStadiumMultiplier(){
@@ -374,15 +415,45 @@ var getTimeTillNextMatch = function getTimeTillNextMatch(){
     return  (timeIntervalInHours*3600000) - (Date.now() - lastGame);
 }
 
-var getOpponentById = function getOpponentById( id) {
+var getOpponentById = function getOpponentById(id) {
     var defer = Promise.defer();
     getIndexOfTeamById(id).then(function(data){
-        defer.resolve(GetOpponentByTeamAndFixture(data,m_currentFixture));
+        GetOpponentByTeamAndFixture(data,m_currentFixture).then(function(data){
+            defer.resolve(data);
+        });
     });
     return defer.promise;
 }
 
+var getTicketPrice = function getTicketPrice(){
+    return ticketPrice;
+}
+var getFacilitiesFinanceMultiplier = function getFacilitiesFinanceMultiplier(){
+    return facilitiesFinanceMultiplier;
+}
+var getStadiumFinanceMultiplier = function getStadiumFinanceMultiplier(){
+    return stadiumFinanceMultiplier;
+}
 
+var getMerchandisePrice = function getMerchandisePrice(){
+    return merchandisePrice;
+}
+
+
+var initFixtures = function initFixtures(){
+    m_currentFixture = 0;
+}
+var deleteDB = function deleteDB(){
+    gameManagerCollection.remove({},function(err,data){
+    });
+}
+
+module.exports.deleteDB = deleteDB;
+module.exports.getMerchandisePrice = getMerchandisePrice;
+module.exports.getTicketPrice = getTicketPrice;
+module.exports.getFacilitiesFinanceMultiplier = getFacilitiesFinanceMultiplier;
+module.exports.getStadiumFinanceMultiplier = getStadiumFinanceMultiplier;
+module.exports.initFixtures = initFixtures;
 module.exports.getOpponentById = getOpponentById;
 module.exports.getTimeTillNextMatch = getTimeTillNextMatch;
 module.exports.executeNextFixture = executeNextFixture;

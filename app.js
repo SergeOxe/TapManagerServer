@@ -17,12 +17,26 @@ app.post('/collectBucket', function (req, res) {
     try {
         reqHandler.collectBucket(req, res);
     }catch (err){
-        console.log("collectBucket",err);
-        res.send("error");
+        console.log("app collectBucket ",err);
+        res.status(502).send("error");
     }
 });
 
 
+app.post('/newUser', function (req, res) {
+    try {
+        reqHandler.newUser(req.body, res);
+    }catch (err){
+        console.log("app newUser ",err);
+        res.status(502).send("error");
+    }
+});
+
+app.get('/delete', function (req, res) {
+    reqHandler.deleteDB();
+});
+
+/*
 app.post('/newUser', function (req, res) {
     try {
         reqHandler.addNewUser(req.body.json, res);
@@ -31,13 +45,14 @@ app.post('/newUser', function (req, res) {
         res.send("error");
     }
 });
+*/
 
 app.post('/loginUser', function (req, res) {
     try {
         reqHandler.loginUser(req.body.json, res);
     }catch (err){
-        console.log("error","loginUser");
-        res.send("error");
+        console.log("app error","loginUser");
+        res.status(502).send("error");
     }
 });
 
@@ -99,9 +114,7 @@ app.post('/getUser', function (req, res) {
     reqHandler.getUserById(req.body.id,res);
 });
 //------------------------------------
-app.post('/newTeamUser', function (req, res) {
-    reqHandler.newTeamUser(req.body,res);
-});
+
 //-----------------------------------
 app.get('/addNewBotSquad', function (req, res) {
     reqHandler.addNewBotSquad(req,res);
@@ -145,7 +158,13 @@ app.post('/addValueToTeam', function (req, res) {
     reqHandler.addValueToTeam(req.body.json,res);
 });
 
+app.get('/', function(request, response) {
+    response.send('TapManager!');
+});
 
+//app.set('port', (process.env.PORT || 5000));
+
+//var server = app.listen(app.get('port'), function () {
 var server = app.listen(3000, function () {
     var host = server.address().address;
     var port = server.address().port;

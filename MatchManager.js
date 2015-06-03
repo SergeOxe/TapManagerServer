@@ -138,8 +138,11 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
     updateValue["lastGameInfo.crowdAtMatch"] = i_matchInfo.crowdAtMatch;
 
     var crowdAtMatch = 0;
-
+    var playersScore = "";
     if (i_isHomeMatch) {
+        for (var i = 0 ; i < i_matchInfo.homeTeamGoals; i ++){
+            playersScore += randomIntFromInterval(1,15)+" ";
+        }
         addValue["gamesHistory.thisSeason.goalsFor"] = i_matchInfo.homeTeamGoals;
         addValue["gamesHistory.thisSeason.goalsAgainst"] = i_matchInfo.awayTeamGoals;
         addValue["gamesHistory.allTime.goalsFor"] = i_matchInfo.homeTeamGoals;
@@ -152,16 +155,21 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         crowdAtMatch = i_matchInfo.crowdAtMatch;
 
     } else {
+        for (var i = 0 ; i < i_matchInfo.awayTeamGoals; i ++){
+            playersScore += randomIntFromInterval(1,15)+" ";
+        }
         addValue["gamesHistory.thisSeason.goalsAgainst"] = i_matchInfo.homeTeamGoals;
         addValue["gamesHistory.thisSeason.goalsFor"] = i_matchInfo.awayTeamGoals;
         addValue["gamesHistory.allTime.goalsAgainst"] = i_matchInfo.homeTeamGoals;
         addValue["gamesHistory.allTime.goalsFor"] = i_matchInfo.awayTeamGoals;
     }
 
+    updateValue["lastGameInfo.playersScoreGoal"] = playersScore;
+
     updateValue["isLastGameIsHomeGame"] = i_isHomeMatch;
     if(!team.isBot) {
         squadHandler.addBoostToAllPlayers(team.id);
-
+        squadHandler.addGaolToMultiPlayer(team.id,playersScore);
         //Expenses
         var ticketPrice = (team.shop.stadiumLevel + 1) * gameManager.getTicketPrice();
         var incomeFromTickets = crowdAtMatch * ticketPrice;

@@ -425,6 +425,16 @@ var getOpponentById = function getOpponentById(id) {
     return defer.promise;
 }
 
+var getNextOpponentById = function getOpponentById(id) {
+    var defer = Promise.defer();
+    getIndexOfTeamById(id).then(function(data){
+        GetOpponentByTeamAndFixture(data,m_currentFixture+1).then(function(data){
+            defer.resolve(data);
+        });
+    });
+    return defer.promise;
+}
+
 var getTicketPrice = function getTicketPrice(){
     return ticketPrice;
 }
@@ -455,6 +465,7 @@ module.exports.getFacilitiesFinanceMultiplier = getFacilitiesFinanceMultiplier;
 module.exports.getStadiumFinanceMultiplier = getStadiumFinanceMultiplier;
 module.exports.initFixtures = initFixtures;
 module.exports.getOpponentById = getOpponentById;
+module.exports.getNextOpponentById = getNextOpponentById;
 module.exports.getTimeTillNextMatch = getTimeTillNextMatch;
 module.exports.executeNextFixture = executeNextFixture;
 module.exports.getTeamByFixtureAndMatch = getTeamByFixtureAndMatch;
@@ -470,4 +481,4 @@ module.exports.getStadiumMultiplier = getStadiumMultiplier;
 module.exports.getNumOfLeagues = getNumOfLeagues;
 module.exports.addNumOfLeagues = addNumOfLeagues;
 module.exports.addValueToGameCollection = addValueToGameCollection;
-module.exports.updateGamesCollection = updateGamesCollection
+module.exports.updateGamesCollection = updateGamesCollection;

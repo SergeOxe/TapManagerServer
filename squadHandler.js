@@ -360,6 +360,31 @@ function boostPlayer(id,indexPlayer){
 }
 
 
+
+function addGaolToMultiPlayer(id,indexPlayers){
+    if (indexPlayers.length == 0){
+        return;
+    }
+    var defer = Promise.defer();
+    var obj = {};
+    var find = {};
+    find["id"] = id;
+    indexPlayers.split(" ").forEach(function (index) {
+        if (index.length != 0) {
+            if (obj["players." + index + ".goalsScored"] != null) {
+                obj["players." + index + ".goalsScored"]++;
+            } else {
+                obj["players." + index + ".goalsScored"] = 1;
+                }
+            }
+
+        });
+        addMultiValueToSquad(find, obj).then(function (data) {
+            defer.resolve("ok")
+        });
+    return defer.promise;
+}
+
 var addBoostToAllPlayers = function addBoostToAllPlayers(id) {
     var defer = Promise.defer();
     var find = {};
@@ -426,12 +451,25 @@ var addValueToSquad = function addValueToSquad (id,key,value){
     var defer = Promise.defer();
     var obj ={};
     obj[key] = value;
-    userCollection.update({"id":id},{$inc:obj},function(err,data){
+    squadCollection.update({"id":id},{$inc:obj},function(err,data){
         if(err){
             console.log("addValueToSquad",err);
             defer.resolve("null");
         }else{
             //console.log("addValueToSquad","ok");
+            defer.resolve("ok");
+        }});
+    return defer.promise;
+}
+
+var addMultiValueToSquad = function addMultiValueToSquad (findBy,obj){
+    var defer = Promise.defer();
+    squadCollection.update(findBy,{$inc:obj},function(err,data){
+        if(err){
+            console.log("addValueToSquad",err);
+            defer.resolve("null");
+        }else{
+            //console.log("addValueToSquad",data);
             defer.resolve("ok");
         }});
     return defer.promise;
@@ -462,6 +500,7 @@ var deleteDB = function deleteDB(){
     });
 }
 
+module.exports.addGaolToMultiPlayer = addGaolToMultiPlayer;
 module.exports.deleteDB = deleteDB;
 module.exports.getAllSquadRatingById = getAllSquadRatingById;
 module.exports.getAllSquadSalaryById = getAllSquadSalaryById;

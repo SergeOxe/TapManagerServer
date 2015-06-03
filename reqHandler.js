@@ -111,7 +111,7 @@ var getInfoById = function getInfoById(id){
     results.push(squadHandler.getSquadById(id));
     results.push(gameManager.getSetup());
     results.push(gameManager.getTimeTillNextMatch());
-    results.push(gameManager.getOpponentById(id));
+    results.push(gameManager.getNextOpponentById(id));
     Promise.all(results).then(function(data){
         var json = {};
         json["user"] = data[0];

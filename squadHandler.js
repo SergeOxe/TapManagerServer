@@ -435,12 +435,16 @@ var getAllSquadRatingById = function getAllSquadRatingById(id) {
     var level = 0;
     find["id"] = id;
     getSquadById(id).then(function (data) {
-        if (data == "null"){
+        if (data == null){
             defer.resolve(randomIntFromInterval(45,120));
             return;
         }
+
         data.players.forEach(function (player) {
-            level += player.level;
+
+            if(!isNaN(player.level)) {
+                level += player.level;
+            }
         });
         defer.resolve(level);
     });

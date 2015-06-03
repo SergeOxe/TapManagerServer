@@ -28,9 +28,16 @@ var calcResult  = function  calcResult(i_HomeTeam, i_AwayTeam) {
         console.log("GetFanBase err "+ i_HomeTeam , err);
         return;
     }
-        results.push(squadHandler.getAllSquadRatingById(i_HomeTeam.id));
+        if(i_HomeTeam.isBot) {
+            results.push(squadHandler.getAllSquadRatingById(-1));
+        }else{
+            results.push(squadHandler.getAllSquadRatingById(i_HomeTeam.id));
+        }
+    if(i_AwayTeam.isBot) {
+        results.push(squadHandler.getAllSquadRatingById(-1));
+    }else{
         results.push(squadHandler.getAllSquadRatingById(i_AwayTeam.id));
-
+    }
     Promise.all(results).then(function(data){
         var sum = (data[0] > data[1]? data[0] + 2*data[1] : 2*data[0] + data[1])
         homeTeamOdds = data[0]/sum;
@@ -41,7 +48,6 @@ var calcResult  = function  calcResult(i_HomeTeam, i_AwayTeam) {
         var awayTeamGoals;
         var eHomeResult;
         var eAwayResult;
-
         if (outcome < homeTeamOdds) {
             // Home team win
             homeTeamGoals = randomIntFromInterval(1, 5);
@@ -143,6 +149,8 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         for (var i = 0 ; i < i_matchInfo.homeTeamGoals; i ++){
             playersScore += randomIntFromInterval(1,15)+" ";
         }
+        addValue["gamesHistory.thisSeason.goalsDifference"] = i_matchInfo.homeTeamGoals - i_matchInfo.awayTeamGoals;
+
         addValue["gamesHistory.thisSeason.goalsFor"] = i_matchInfo.homeTeamGoals;
         addValue["gamesHistory.thisSeason.goalsAgainst"] = i_matchInfo.awayTeamGoals;
         addValue["gamesHistory.allTime.goalsFor"] = i_matchInfo.homeTeamGoals;
@@ -158,6 +166,8 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         for (var i = 0 ; i < i_matchInfo.awayTeamGoals; i ++){
             playersScore += randomIntFromInterval(1,15)+" ";
         }
+        addValue["gamesHistory.thisSeason.goalsDifference"] = i_matchInfo.awayTeamGoals - i_matchInfo.homeTeamGoals;
+
         addValue["gamesHistory.thisSeason.goalsAgainst"] = i_matchInfo.homeTeamGoals;
         addValue["gamesHistory.thisSeason.goalsFor"] = i_matchInfo.awayTeamGoals;
         addValue["gamesHistory.allTime.goalsAgainst"] = i_matchInfo.homeTeamGoals;

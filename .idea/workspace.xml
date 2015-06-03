@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bd90f3f2-c7c6-46a6-bcce-9063e0ca35f1" name="Default" comment="">
+      <change type="MOVED" beforePath="C:\Users\User\WebstormProjects\TapManager\MatchManager.js" afterPath="$PROJECT_DIR$/matchManager.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gameManager.js" afterPath="$PROJECT_DIR$/gameManager.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reqHandler.js" afterPath="$PROJECT_DIR$/reqHandler.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/squadHandler.js" afterPath="$PROJECT_DIR$/squadHandler.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/teamsHandler.js" afterPath="$PROJECT_DIR$/teamsHandler.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="TapManager.iws" />
@@ -26,11 +27,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="32" column="3" selection-start-line="32" selection-start-column="3" selection-end-line="32" selection-end-column="3" />
+            <state vertical-scroll-proportion="0.42700157">
+              <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
               <folding>
                 <element signature="e#0#39#0" expanded="false" />
               </folding>
@@ -41,13 +42,12 @@
       <file leaf-file-name="teamsHandler.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/teamsHandler.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="242" column="32" selection-start-line="242" selection-start-column="32" selection-end-line="242" selection-end-column="32" />
+            <state vertical-scroll-proportion="-15.75862">
+              <caret line="156" column="25" selection-start-line="156" selection-start-column="25" selection-end-line="156" selection-end-column="25" />
               <folding>
                 <element signature="e#0#39#0" expanded="false" />
-                <element signature="e#288#465#0" expanded="false" />
-                <element signature="e#467#1605#0" expanded="false" />
-                <element signature="e#1654#4152#0" expanded="false" />
+                <element signature="e#264#441#0" expanded="false" />
+                <element signature="e#443#1581#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -57,14 +57,13 @@
         <entry file="file://$PROJECT_DIR$/squadHandler.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="371" column="25" selection-start-line="371" selection-start-column="25" selection-end-line="371" selection-end-column="25" />
+              <caret line="447" column="11" selection-start-line="447" selection-start-column="11" selection-end-line="447" selection-end-column="11" />
               <folding>
                 <element signature="e#499#1759#0" expanded="false" />
                 <element signature="e#1777#2731#0" expanded="false" />
                 <element signature="e#4190#6323#0" expanded="false" />
                 <element signature="e#6370#6700#0" expanded="false" />
                 <element signature="n#!!block;n#getRandomLastName#0" expanded="false" />
-                <element signature="e#10589#10986#0" expanded="false" />
                 <element signature="n#!!block;n#randomIntFromInterval#0" expanded="false" />
               </folding>
             </state>
@@ -74,8 +73,8 @@
       <file leaf-file-name="matchManager.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/matchManager.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.0">
-              <caret line="184" column="30" selection-start-line="184" selection-start-column="28" selection-end-line="184" selection-end-column="30" />
+            <state vertical-scroll-proportion="-27.586206">
+              <caret line="141" column="70" selection-start-line="141" selection-start-column="70" selection-end-line="141" selection-end-column="70" />
               <folding>
                 <element signature="e#0#39#0" expanded="false" />
                 <element signature="n#!!block;n#randomIntFromInterval#0" expanded="false" />
@@ -87,8 +86,8 @@
       <file leaf-file-name="gameManager.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gameManager.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.4827585">
-              <caret line="466" column="0" selection-start-line="466" selection-start-column="0" selection-end-line="466" selection-end-column="0" />
+            <state vertical-scroll-proportion="-192.27586">
+              <caret line="330" column="19" selection-start-line="330" selection-start-column="19" selection-end-line="330" selection-end-column="19" />
               <folding>
                 <element signature="e#0#39#0" expanded="false" />
               </folding>
@@ -96,10 +95,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="reqHandler.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="reqHandler.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/reqHandler.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.38618523">
+            <state vertical-scroll-proportion="0.0">
               <caret line="110" column="48" selection-start-line="110" selection-start-column="48" selection-end-line="110" selection-end-column="48" />
               <folding>
                 <element signature="e#2126#2211#0" expanded="false" />
@@ -175,13 +174,13 @@
         <option value="$PROJECT_DIR$/bugs.txt" />
         <option value="$PROJECT_DIR$/userHandler.js" />
         <option value="$PROJECT_DIR$/bucketHandler.js" />
-        <option value="$PROJECT_DIR$/teamsHandler.js" />
         <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/endOfSeason.js" />
+        <option value="$PROJECT_DIR$/reqHandler.js" />
+        <option value="$PROJECT_DIR$/gameManager.js" />
         <option value="$PROJECT_DIR$/squadHandler.js" />
         <option value="$PROJECT_DIR$/matchManager.js" />
-        <option value="$PROJECT_DIR$/gameManager.js" />
-        <option value="$PROJECT_DIR$/reqHandler.js" />
+        <option value="$PROJECT_DIR$/teamsHandler.js" />
       </list>
     </option>
   </component>
@@ -425,9 +424,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#39#0" expanded="false" />
-            <element signature="e#288#465#0" expanded="false" />
-            <element signature="e#467#1605#0" expanded="false" />
-            <element signature="e#1654#4152#0" expanded="false" />
+            <element signature="e#264#441#0" expanded="false" />
+            <element signature="e#443#1581#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -502,9 +500,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#39#0" expanded="false" />
-            <element signature="e#288#465#0" expanded="false" />
-            <element signature="e#467#1605#0" expanded="false" />
-            <element signature="e#1654#4152#0" expanded="false" />
+            <element signature="e#264#441#0" expanded="false" />
+            <element signature="e#443#1581#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -579,9 +576,8 @@
           <caret line="115" column="0" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="51" />
           <folding>
             <element signature="e#0#39#0" expanded="false" />
-            <element signature="e#288#465#0" expanded="false" />
-            <element signature="e#467#1605#0" expanded="false" />
-            <element signature="e#1654#4152#0" expanded="false" />
+            <element signature="e#264#441#0" expanded="false" />
+            <element signature="e#443#1581#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -656,9 +652,8 @@
           <caret line="20" column="19" selection-start-line="20" selection-start-column="19" selection-end-line="20" selection-end-column="19" />
           <folding>
             <element signature="e#0#39#0" expanded="false" />
-            <element signature="e#288#465#0" expanded="false" />
-            <element signature="e#467#1605#0" expanded="false" />
-            <element signature="e#1654#4152#0" expanded="false" />
+            <element signature="e#264#441#0" expanded="false" />
+            <element signature="e#443#1581#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -870,46 +865,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.js">
+    <entry file="file://$PROJECT_DIR$/reqHandler.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="32" column="3" selection-start-line="32" selection-start-column="3" selection-end-line="32" selection-end-column="3" />
+          <caret line="110" column="48" selection-start-line="110" selection-start-column="48" selection-end-line="110" selection-end-column="48" />
           <folding>
-            <element signature="e#0#39#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/teamsHandler.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="242" column="32" selection-start-line="242" selection-start-column="32" selection-end-line="242" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#39#0" expanded="false" />
-            <element signature="e#288#465#0" expanded="false" />
-            <element signature="e#467#1605#0" expanded="false" />
-            <element signature="e#1654#4152#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/matchManager.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.0">
-          <caret line="184" column="30" selection-start-line="184" selection-start-column="28" selection-end-line="184" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#39#0" expanded="false" />
-            <element signature="n#!!block;n#randomIntFromInterval#0" expanded="false" />
+            <element signature="e#2126#2211#0" expanded="false" />
+            <element signature="e#2259#2345#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gameManager.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.4827585">
-          <caret line="466" column="0" selection-start-line="466" selection-start-column="0" selection-end-line="466" selection-end-column="0" />
+        <state vertical-scroll-proportion="-192.27586">
+          <caret line="330" column="19" selection-start-line="330" selection-start-column="19" selection-end-line="330" selection-end-column="19" />
           <folding>
             <element signature="e#0#39#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/matchManager.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-27.586206">
+          <caret line="141" column="70" selection-start-line="141" selection-start-column="70" selection-end-line="141" selection-end-column="70" />
+          <folding>
+            <element signature="e#0#39#0" expanded="false" />
+            <element signature="n#!!block;n#randomIntFromInterval#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -917,26 +900,36 @@
     <entry file="file://$PROJECT_DIR$/squadHandler.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="371" column="25" selection-start-line="371" selection-start-column="25" selection-end-line="371" selection-end-column="25" />
+          <caret line="447" column="11" selection-start-line="447" selection-start-column="11" selection-end-line="447" selection-end-column="11" />
           <folding>
             <element signature="e#499#1759#0" expanded="false" />
             <element signature="e#1777#2731#0" expanded="false" />
             <element signature="e#4190#6323#0" expanded="false" />
             <element signature="e#6370#6700#0" expanded="false" />
             <element signature="n#!!block;n#getRandomLastName#0" expanded="false" />
-            <element signature="e#10589#10986#0" expanded="false" />
             <element signature="n#!!block;n#randomIntFromInterval#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reqHandler.js">
+    <entry file="file://$PROJECT_DIR$/teamsHandler.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.38618523">
-          <caret line="110" column="48" selection-start-line="110" selection-start-column="48" selection-end-line="110" selection-end-column="48" />
+        <state vertical-scroll-proportion="-15.75862">
+          <caret line="156" column="25" selection-start-line="156" selection-start-column="25" selection-end-line="156" selection-end-column="25" />
           <folding>
-            <element signature="e#2126#2211#0" expanded="false" />
-            <element signature="e#2259#2345#0" expanded="false" />
+            <element signature="e#0#39#0" expanded="false" />
+            <element signature="e#264#441#0" expanded="false" />
+            <element signature="e#443#1581#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.42700157">
+          <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#39#0" expanded="false" />
           </folding>
         </state>
       </provider>

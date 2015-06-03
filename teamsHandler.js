@@ -4,11 +4,10 @@
 var Promise = require('bluebird');
 var squadHandler = require('./squadHandler');
 var gameManager = require('./gameManager');
-var reqHandler = require('./reqHandler');
+//var reqHandler = require('./reqHandler');
 var teamsCollection;
 
 
-var m_currentFixture = 0;
 
 
 var setup = function setup(db){
@@ -114,7 +113,8 @@ var addNewNumTeam = function addNewNumTeam(num){
                     "goalsFor": 0,
                     "goalsAgainst": 0,
                     "homeGames": 0,
-                    "crowd": 0
+                    "crowd": 0,
+                    "goalsDifference" : 0
                 },
                 "allTime": {
                     "wins": 0,
@@ -318,7 +318,7 @@ var getSortedTeams = function getSortedTeams (leagueNum){
 var getSortedTeamsByPoints = function getSortedTeamsByPoints (leagueNum){
     //Need to handle goal difference.
     var defer = Promise.defer();
-    teamsCollection.find({league: leagueNum}).sort({"gamesHistory.thisSeason.points": -1}).toArray(function(err,sortedTeams) {
+    teamsCollection.find({league: leagueNum}).sort({"gamesHistory.thisSeason.points": -1}, {"gamesHistory.thisSeason.goalsDifference" : -1}).toArray(function(err,sortedTeams) {
         if (!sortedTeams) {
             console.log("getSortedTeamsByPoints err",err)
             defer.resolve("null");

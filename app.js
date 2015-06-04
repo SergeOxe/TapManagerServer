@@ -8,7 +8,7 @@ var reqHandler = require('./reqHandler');
 var app = express();
 var fs = require('fs');
 
-var version = "0.0.0.1";
+var version = "0.0.0.3";
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(multer()); // for parsing multipart/form-data
@@ -30,10 +30,21 @@ app.post('/newUser', function (req, res) {
     }
 });
 
+
 app.get('/delete', function (req, res) {
-    reqHandler.deleteDB();
+    reqHandler.deleteDB().then(function(data){
+        res.send(data);
+    });
 });
 
+app.post('/collectBucket', function (req, res) {
+    try {
+        reqHandler.collectBucket(req, res);
+    } catch (err) {
+        console.log("app collectBucket ", err);
+        res.status(502).send("error");
+    }
+});
 
 app.post('/loginUser', function (req, res) {
     try {

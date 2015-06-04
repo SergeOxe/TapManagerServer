@@ -33,11 +33,21 @@ var gameManagerSetup = function gameManagerSetup(){
 }
 
 var deleteDB = function deleteDB(){
+    var defer = Promise.defer();
+    var results = [];
     gameManager.deleteDB();
     teamsHandler.deleteDB();
     squadHandler.deleteDB();
     bucketHandler.deleteDB();
     userHandler.deleteDB();
+    gameManagerSetup();
+    results.push(teamsHandler.addNewNumTeam(20));
+    results.push(teamsHandler.addNewNumTeam(20));
+    results.push(teamsHandler.addNewNumTeam(20));
+    Promise.all(results).then(function(data){
+       defer.resolve("ok");
+    });
+    return defer.promise;
 }
 
 var loginUser = function loginUser (user,res){

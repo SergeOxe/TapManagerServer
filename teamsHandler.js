@@ -249,6 +249,8 @@ var newTeamUser = function newTeamUser(detailsJson){
         obj["teamName"] = detailsJson.teamName;
         obj["coachName"] = detailsJson.name;
         obj["isBot"] = false;
+        obj["lastGameInfo.homeTeam"] ="---";
+        obj["lastGameInfo.awayTeam"] ="---";
         teamsCollection.update({"_id":id},{$set: obj},function(err,data){
             if(!data){
                 console.log("newTeamUser err",err);

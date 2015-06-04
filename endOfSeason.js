@@ -37,6 +37,13 @@ var endOfSeason = function endOfSeason(){
             if (j != numOfLeagues - 1){
                 var obj = {};
                 obj["league"] = 1;
+                if(!teams[0].isBot){
+                    userHandler.addValueToUser(teams[0].id,{currentLeague:1});
+                }
+                if(!teams[1].isBot){
+                    userHandler.addValueToUser(teams[1].id,{currentLeague:1});
+                }
+
                 results.push(teamsHandler.addValueToTeamMulti({_id:teams[0]._id},obj));
                 results.push(teamsHandler.addValueToTeamMulti({_id:teams[1]._id},obj));
                 console.log("Teams make it to next league " +  teams[0].teamName +"   " + teams[1].teamName);
@@ -44,6 +51,22 @@ var endOfSeason = function endOfSeason(){
             if (j != 0){
                 var obj = {};
                 obj["league"] = -1;
+
+                if(!teams[19].isBot){
+                    userHandler.getUserById(teams[19].id).then(function(user) {
+                        if (user.currentLeague > 0) {
+                            userHandler.addValueToUser(teams[19].id, {currentLeague: -1});
+                        }
+                    })
+                }
+                if(!teams[18].isBot){
+                    userHandler.getUserById(teams[18].id).then(function(user) {
+                        if (user.currentLeague > 0) {
+                            userHandler.addValueToUser(teams[18].id, {currentLeague: -1});
+                        }
+                    })
+                }
+
                 results.push(teamsHandler.addValueToTeamMulti({_id:teams[19]._id},obj));
                 results.push(teamsHandler.addValueToTeamMulti({_id:teams[18]._id},obj));
                 console.log("Teams which goes to lower league " +  teams[19].teamName +"   " + teams[18].teamName);

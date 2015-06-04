@@ -43,6 +43,7 @@ var addNewUser = function addNewUser (body){
             //email:user.email,
             id: body.id,
             name:body.name,
+            currentLeague:0,
             coinValue: 200,
             money:10000,
             lastLogin : Date.now()
@@ -103,6 +104,24 @@ var addMoneyToUser = function addMoneyToUser (id,money){
             defer.resolve("null");
         }else{
             //console.log("addMoneyToUser","ok");
+            defer.resolve("ok");
+        }});
+    return defer.promise;
+}
+
+var addValueToUser = function addValueToUser (id,obj){
+    var defer = Promise.defer();
+    if(isNaN(money)){
+        console.log("addValueToUser",obj);
+        defer.resolve("null");
+        return;
+    }
+    userCollection.update({id:id},{$inc: obj},function(err,data){
+        if(err){
+            console.log("addValueToUser",err);
+            defer.resolve("null");
+        }else{
+            //console.log("addValueToUser","ok");
             defer.resolve("ok");
         }});
     return defer.promise;
@@ -191,6 +210,7 @@ module.exports.addMoneyToUser = addMoneyToUser;
 module.exports.upgradeItem = upgradeItem;
 module.exports.addCoinMoney = addCoinMoney;
 module.exports.addNewUser = addNewUser;
+module.exports.addValueToUser = addValueToUser;
 module.exports.addMoneyToUser = addMoneyToUser;
 module.exports.updateUser = updateUser;
 module.exports.loginUser = loginUser;

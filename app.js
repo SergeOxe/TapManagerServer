@@ -48,6 +48,10 @@ app.post('/newNumTeam', function (req, res) {
     reqHandler.addNewTeam(req,res);
 });
 
+app.post('/changeBotTeamName', function (req, res) {
+    reqHandler.changeBotTeamName(req.body,res);
+});
+
 app.post('/playerBoostClick', function(req,res){
     try{
         reqHandler.boostPlayer(req,res);

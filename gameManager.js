@@ -112,6 +112,7 @@ function getLeagueSetup() {
             console.log("getLeagueSetup err", err);
             var doc = {currentFixture : 0,
                         numOfLeagues: 0,
+                        currentSeason:0,
                         lastGame: Date.now(),
                         users: 0,
                         timeIntervalInHours : 0.0833,

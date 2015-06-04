@@ -14,10 +14,13 @@ var reqHandler = require("./reqHandler");
 var endOfSeason = function endOfSeason(){
     var defer = Promise.defer();
     var fixture = {};
+    var season = {};
     fixture["currentFixture"] = 0;
+    season["currentSeason"] = 1;
     var results = [];
     var leagues = [];
     results.push(gameManager.updateGamesCollection({},fixture));
+    results.push(gameManager.addValueToGameCollection({},season));
     var numOfLeagues = gameManager.getNumOfLeagues();
 
     for(var k = 1 ; k <= numOfLeagues ; k++){
@@ -60,7 +63,7 @@ function giveBonusToTeams(sortedTeamsLeague, leagueNum){
     var defer = Promise.defer();
     var results = [];
     for (var i = 0 ; i < 20 ; i++){
-        results.push(userHandler.addMoneyToUser(sortedTeamsLeague[i]._id,(20 - i) * 10000 * leagueNum));
+        results.push(userHandler.addMoneyToUser(sortedTeamsLeague[i]._id,(20 - i) * 100000 * leagueNum));
     }
     Promise.all(results).then(function(data){
        defer.resolve("ok");

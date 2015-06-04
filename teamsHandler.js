@@ -61,7 +61,9 @@ var addNewTeam = function addNewTeam (body){
     return defer.promise;
 }
 */
-
+function randomIntFromInterval(min,max) {
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
 var addNewNumTeam = function addNewNumTeam(num){
     var defer = Promise.defer();
     //console.log(body);
@@ -126,6 +128,8 @@ var addNewNumTeam = function addNewNumTeam(num){
                     "crowd": 0
                 }
             },
+            "isDefaultName" : true,
+            "logo": randomIntFromInterval(0,29),
             "teamName": "team " + ((leagueNum - 1)*20 + i),
             "id": ((leagueNum - 1)*20 + i)
         };
@@ -153,6 +157,25 @@ var getBotTeam = function getBotTeam (){
         }else{
             //console.log("getBotTeam","ok");
             defer.resolve({team:data});
+        }});
+    return defer.promise;
+}
+
+var changeBotTeamName = function changeBotTeamName (name){
+    var defer = Promise.defer();
+    teamsCollection.findOne({isBot:true,'isDefaultName':true},{_id:1},function(err,data){
+        if(!data){
+            console.log("getBotTeam err",err);
+            defer.resolve({team: "null"});
+        }else{
+            var obj = {};
+            obj["teamName"] = name;
+            obj["isDefaultName"] = false;
+            updateTeamMulti({_id:data._id},obj).then(function(data){
+                defer.resolve("ok");
+            });
+            //console.log("getBotTeam","ok");
+
         }});
     return defer.promise;
 }
@@ -347,4 +370,5 @@ module.exports.newTeamUser = newTeamUser;
 module.exports.getTeamById = getTeamById;
 module.exports.getTeamByKey = getTeamByKey;
 module.exports.getTeamsInLeague = getTeamsInLeague;
+module.exports.changeBotTeamName = changeBotTeamName;
 module.exports.setup = setup;

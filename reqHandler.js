@@ -88,6 +88,11 @@ var getBotSquad = function getBotSquad(req,res){
     })
 }
 
+var changeBotTeamName = function changeBotTeamName(req,res){
+    teamsHandler.changeBotTeamName(req.name).then(function(data){
+        res.send(data.team);
+    });
+}
  var newUser = function newUser(details,res){
      var results = [];
      results.push(userHandler.addNewUser(details));
@@ -223,5 +228,5 @@ module.exports.newUser = newUser;
 module.exports.getTeamsInLeague = getTeamsInLeague;
 module.exports.addNewBucket = addNewBucket;
 module.exports.loginUser = loginUser;
-
+module.exports.changeBotTeamName =changeBotTeamName;
 module.exports.gameManagerSetup = gameManagerSetup;

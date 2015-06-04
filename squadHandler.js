@@ -340,6 +340,8 @@ function boostPlayer(id,indexPlayer){
                 obj["players."+indexPlayer +".priceToBoost"] = player.priceToBoost * gameManager.getMultiplierBoost();
                 //obj["players."+indexPlayer +".boost"] = player.boost;
                 obj["players."+indexPlayer +".level"] = player.level + 1;
+                obj["players."+indexPlayer +".salary"] = player.salary *1.1;
+                obj["players."+indexPlayer +".price"] = player.price *1.25;
             }else{
                 obj["players."+indexPlayer +".currentBoost"] =  player.boost + player.currentBoost;
             }

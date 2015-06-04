@@ -127,8 +127,8 @@ function getLeagueSetup() {
                             },
                         financeMultipliers:{
                             ticketPrice: 7,
-                            facilitiesMultiplier: 4000,
-                            stadiumMultiplier:10000,
+                            facilitiesMultiplier: 1000,
+                            stadiumMultiplier:2000,
                             merchandisePrice: 5
                         }
                         };

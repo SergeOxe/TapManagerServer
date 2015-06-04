@@ -267,7 +267,7 @@ var getTeamByKey = function getTeamById (key){
 
 var getTeamsInLeague = function getTeamsInLeague(league){
     var defer = Promise.defer();
-    teamsCollection.find({league: league},{teamName:1,gamesHistory:1}).toArray(function(err, results){
+    teamsCollection.find({league: league},{teamName:1,"gamesHistory.thisSeason":1}).toArray(function(err, results){
         defer.resolve(results);
     });
     return defer.promise;

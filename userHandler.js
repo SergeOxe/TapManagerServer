@@ -43,8 +43,8 @@ var addNewUser = function addNewUser (body){
             //email:user.email,
             id: body.id,
             name:body.name,
-            coinValue: 20000,
-            money:1000000,
+            coinValue: 200,
+            money:10000,
             lastLogin : Date.now()
     };
     userCollection.insert(obj,function(err,data){
@@ -92,6 +92,11 @@ var updateUser = function updateUser (id,Key,value){
 
 var addMoneyToUser = function addMoneyToUser (id,money){
     var defer = Promise.defer();
+    if(isNaN(money)){
+        console.log("addMoneyToUser",money);
+        defer.resolve("null");
+        return;
+    }
     userCollection.update({id:id},{$inc: {money: money}},function(err,data){
         if(err){
             console.log("addMoneyToUser",err);
@@ -164,9 +169,14 @@ var addCoinMoney = function addCoinMoney(id,clicks){
     var defer = Promise.defer();
     getUserById(id).then(function(data){
         var money = clicks * data.coinValue;
-        addMoneyToUser(id,money).then(function(data){
-            defer.resolve("ok");
-        })
+        if(!isNaN(money)){
+            addMoneyToUser(id,money).then(function(data){
+                defer.resolve("ok");
+            })
+        }else{
+            defer.resolve("null");
+        }
+
     });
     return defer.promise;
 }

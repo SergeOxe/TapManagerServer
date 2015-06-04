@@ -6,20 +6,18 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var reqHandler = require('./reqHandler');
 var app = express();
+var fs = require('fs');
 
+var version = "0.0.0.1";
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(multer()); // for parsing multipart/form-data
 
-
-
-app.post('/collectBucket', function (req, res) {
-    try {
-        reqHandler.collectBucket(req, res);
-    }catch (err){
-        console.log("app collectBucket ",err);
-        res.status(502).send("error");
+fs.readFile('./public/index.html', function (err, data) {
+    if (err) {
+        throw err;
     }
+    html = data;
 });
 
 
@@ -36,16 +34,6 @@ app.get('/delete', function (req, res) {
     reqHandler.deleteDB();
 });
 
-/*
-app.post('/newUser', function (req, res) {
-    try {
-        reqHandler.addNewUser(req.body.json, res);
-    }catch (err){
-        console.log("error","newUser");
-        res.send("error");
-    }
-});
-*/
 
 app.post('/loginUser', function (req, res) {
     try {
@@ -65,7 +53,7 @@ app.post('/playerBoostClick', function(req,res){
         reqHandler.boostPlayer(req,res);
     }catch (err){
         console.log("error","playerBoostClick");
-        res.send("error");
+        res.status(502).send("error");
     }
 });
 
@@ -74,15 +62,16 @@ app.post('/upgradeFans', function(req,res){
         reqHandler.upgradeItem(req,"fansLevel",res);
     }catch (err){
         console.log("error","upgradeFans");
-        res.send("error");
+        res.status(502).send("error");
     }
 });
+
 app.post('/upgradeFacilities', function(req,res){
     try{
         reqHandler.upgradeItem(req,"facilitiesLevel",res);
     }catch (err){
         console.log("error","upgradeFacilities");
-        res.send("error");
+        res.sstatus(502).send("error");
     }
 });
 
@@ -91,37 +80,33 @@ app.post('/upgradeStadium', function(req,res){
         reqHandler.upgradeItem(req, "stadiumLevel", res);
     }catch (err) {
         console.log("error","upgradeStadium");
-        res.send("error");
+        res.status(502).send("error");
     }
 });
 
 app.post('/getInfoById', function (req, res) {
-    reqHandler.getInfoById(req.body.id, res).then(function (data) {
-        res.send(data);
-    });
+    try {
+        reqHandler.getInfoById(req.body.id, res).then(function (data) {
+            res.send(data);
+        });
+    }catch (err){
+        console.log("error","getInfoById");
+        res.status(502).send("error");
+    }
 });
+
 app.post('/coinClick',function(req,res){
-   reqHandler.addCoinMoney(req,res);
+    try {
+        reqHandler.addCoinMoney(req, res);
+    }catch (err){
+        console.log("error","coinClick");
+        res.status(502).send("error");
+    }
 });
 
-
+//--------------------------------------------
 app.post('/addMoney' ,function(req, res) {
     reqHandler.addMoneyToUser(req,res);
-});
-
-//------------------------------
-app.post('/getUser', function (req, res) {
-    reqHandler.getUserById(req.body.id,res);
-});
-//------------------------------------
-
-//-----------------------------------
-app.get('/addNewBotSquad', function (req, res) {
-    reqHandler.addNewBotSquad(req,res);
-});
-//----------------------------------------------
-app.get('/getBot', function (req, res) {
-    reqHandler.getBotTeam(req,res);
 });
 
 app.get('/getTimeTillNextMatch', function (req, res) {
@@ -138,29 +123,12 @@ app.get('/getTime', function (req, res) {
     res.send(obj);
 });
 
-
-
-//-------------------------------------------------
-app.get('/getBotSquad', function (req, res) {
-    reqHandler.getBotSquad(req,res);
-});
-//---------------------------------------------------
-app.get('/getTeamByFixtureAndMatch', function (req, res) {
-    reqHandler.getTeamByFixtureAndMatch(req,res);
-});
-
-//-----------------------------------------------------
-app.post('/addBucket', function (req, res) {
-    reqHandler.addNewBucket(req,res);
-});
-//-------------------------------------------------
-app.post('/addValueToTeam', function (req, res) {
-    reqHandler.addValueToTeam(req.body.json,res);
-});
-
 app.get('/', function(request, response) {
-    response.send('TapManager!');
+    //response.send('TapManager server version: '+version);
+    response.send(html.toString());
 });
+
+
 
 //app.set('port', (process.env.PORT || 5000));
 
@@ -170,3 +138,4 @@ var server = app.listen(3000, function () {
     var port = server.address().port;
     console.log('Listening at http://%s:%s', host, port);
 });
+

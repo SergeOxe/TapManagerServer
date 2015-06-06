@@ -93,7 +93,9 @@ function  MatchInfo(i_HomeTeam, i_AwayTeam, i_HomeTeamGoals, i_AwayTeamGoals,  i
         awayTeam : awayTeam ,
         homeTeamGoals : i_HomeTeamGoals,
         awayTeamGoals : i_AwayTeamGoals,
-        crowdAtMatch : i_CrowdAtMatch
+        crowdAtMatch : i_CrowdAtMatch,
+        homeTeamLogo:i_HomeTeam.logo,
+        awayTeamLogo:i_AwayTeam.logo
         };
 }
 
@@ -147,6 +149,8 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
 
     updateValue["lastGameInfo.homeTeam"] = i_matchInfo.homeTeam;
     updateValue["lastGameInfo.awayTeam"] = i_matchInfo.awayTeam;
+    updateValue["lastGameInfo.homeTeamLogo"] = i_matchInfo.homeTeamLogo;
+    updateValue["lastGameInfo.awayTeamLogo"] = i_matchInfo.awayTeamLogo;
     updateValue["lastGameInfo.awayTeamGoals"] = i_matchInfo.awayTeamGoals;
     updateValue["lastGameInfo.homeTeamGoals"] = i_matchInfo.homeTeamGoals;
     updateValue["lastGameInfo.crowdAtMatch"] = i_matchInfo.crowdAtMatch;

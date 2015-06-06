@@ -339,7 +339,7 @@ function  GetOpponentByTeamAndFixture( indexAndLeague,  i_Fixture){
             }
         }
         //console.log("Could not find team in fixture list!");
-        defer.resolve({opponent : "You have not played a game yet",
+        defer.resolve({opponent : "none",
             isHomeMatch:false});
     });
     return defer.promise;

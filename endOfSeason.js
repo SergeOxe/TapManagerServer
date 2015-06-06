@@ -30,6 +30,8 @@ var endOfSeason = function endOfSeason(){
     Promise.all(leagues).then(function(leaguesTeams){
         for(var j = 0 ; j < numOfLeagues ; j++){
             var teams = leaguesTeams[j];
+            var upMessage = {"header": "League", "content":"Congratulations you made to the next league!"};
+            var downMessage = {"header":"League" , "content":"Better luck next time!"};
             results.push(giveBonusToTeams(teams, j));
             for (var i = 0 ; i< 20 ; i++){
                 results.push(initSeasonStatistics(teams[i]));
@@ -38,9 +40,11 @@ var endOfSeason = function endOfSeason(){
                 var obj = {};
                 obj["league"] = 1;
                 if(!teams[0].isBot){
+                    userHandler.addMessageToUser(teams[0].id, upMessage);
                     userHandler.addValueToUser(teams[0].id,{currentLeague:1});
                 }
                 if(!teams[1].isBot){
+                    userHandler.addMessageToUser(teams[1].id, upMessage);
                     userHandler.addValueToUser(teams[1].id,{currentLeague:1});
                 }
 
@@ -55,6 +59,7 @@ var endOfSeason = function endOfSeason(){
                 if(!teams[19].isBot){
                     userHandler.getUserById(teams[19].id).then(function(user) {
                         if (user.currentLeague > 0) {
+                            userHandler.addMessageToUser(teams[19].id, downMessage);
                             userHandler.addValueToUser(teams[19].id, {currentLeague: -1});
                         }
                     })
@@ -62,6 +67,7 @@ var endOfSeason = function endOfSeason(){
                 if(!teams[18].isBot){
                     userHandler.getUserById(teams[18].id).then(function(user) {
                         if (user.currentLeague > 0) {
+                            userHandler.addMessageToUser(teams[19].id, downMessage);
                             userHandler.addValueToUser(teams[18].id, {currentLeague: -1});
                         }
                     })
@@ -85,8 +91,13 @@ var endOfSeason = function endOfSeason(){
 function giveBonusToTeams(sortedTeamsLeague, leagueNum){
     var defer = Promise.defer();
     var results = [];
+    var message ={"header":"Bonus","content": "You got bonus of "};
     for (var i = 0 ; i < 20 ; i++){
-        results.push(userHandler.addMoneyToUser(sortedTeamsLeague[i]._id,(20 - i) * 100000 * leagueNum));
+        if(sortedTeamsLeague[i].id != -1) {
+            message[0].content += ((20 - i) * 100000 * leagueNum) + " coins";
+            results.push(userHandler.addMoneyToUser(sortedTeamsLeague[i].id, (20 - i) * 100000 * leagueNum));
+            results.push(userHandler.addMessageToUser(sortedTeamsLeague[i].id,message));
+        }
     }
     Promise.all(results).then(function(data){
        defer.resolve("ok");

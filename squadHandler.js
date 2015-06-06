@@ -233,7 +233,7 @@ var addNewBotSquad =  function addNewBotSquad(id){
     var obj = { "id" : id, "isBot" : true};
     for (var i = 0; i < 15 ; i++){
        var player = {
-            "id" : i,
+            "id" : -1,
             "position": 0,
             "firstName": "",
             "lastName": "",
@@ -342,6 +342,8 @@ function boostPlayer(id,indexPlayer){
                 obj["players."+indexPlayer +".level"] = player.level + 1;
                 obj["players."+indexPlayer +".salary"] = player.salary *1.1;
                 obj["players."+indexPlayer +".price"] = player.price *1.25;
+                var message = {"header":"Level up","content":player.firstName + " "+player.lastName+" is level "+ (player.level + 1) + " now" };
+                userHandler.addMessageToUser(id,message);
             }else{
                 obj["players."+indexPlayer +".currentBoost"] =  player.boost + player.currentBoost;
             }

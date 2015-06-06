@@ -39,15 +39,19 @@ var loginUser = function loginUser (body,res){
 
 var addNewUser = function addNewUser (body){
     var defer = Promise.defer();
+    var message = [];
+    message.push({header:"Welcome To Tap Manager","content":" You got 1000000"});
     var obj = {
             //email:user.email,
             id: body.id,
             name:body.name,
             currentLeague:0,
             coinValue: 200,
-            money:10000,
-            lastLogin : Date.now()
-    };
+            money:1000000,
+            lastLogin : Date.now(),
+            isMessage: true,
+            message: message
+            }
     userCollection.insert(obj,function(err,data){
         if(err){
             console.log("addNewTeam",err);
@@ -127,11 +131,45 @@ var addValueToUser = function addValueToUser (id,obj){
     return defer.promise;
 }
 
+var addMessageToUser = function addMessageToUser (id,messageArray){
+    var defer = Promise.defer();
+    if(messageArray.length == 0){
+        console.log("addMessageToUser",obj);
+        defer.resolve("null");
+        return;
+    }
+    userCollection.update({id:id},{ $push: { message: messageArray}},function(err,data){
+        if(err){
+            console.log("addMessageToUser",messageArray);
+            console.log("addMessageToUser",err);
+            defer.resolve("null");
+        }else{
+            updateUser(id,"isMessage",true).then(function(data){
+                defer.resolve(data);
+            });
+            //console.log("addMessageToUser","ok");
+        }});
+    return defer.promise;
+}
+
 var addValueToUser = function addValueToUser (id,value){
     var defer = Promise.defer();
     var obj ={};
     //obj[key] = value;
     userCollection.update({id:id},{$inc:value},function(err,data){
+        if(err){
+            console.log("addMoneyToUser",err);
+            defer.resolve("null");
+        }else{
+            //console.log("addMoneyToUser","ok");
+            defer.resolve("ok");
+        }});
+    return defer.promise;
+}
+
+var updateMultiValueToUser = function updateMultiValueToUser (id,obj){
+    var defer = Promise.defer();
+    userCollection.update({id:id},{$set: obj},function(err,data){
         if(err){
             console.log("addMoneyToUser",err);
             defer.resolve("null");
@@ -216,3 +254,5 @@ module.exports.updateUser = updateUser;
 module.exports.loginUser = loginUser;
 module.exports.getUserById = getUserById;
 module.exports.setup = setup;
+module.exports.addMessageToUser = addMessageToUser;
+module.exports.updateMultiValueToUser = updateMultiValueToUser;

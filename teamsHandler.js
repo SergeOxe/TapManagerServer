@@ -131,7 +131,7 @@ var addNewNumTeam = function addNewNumTeam(num){
             "isDefaultName" : true,
             "logo": randomIntFromInterval(0,29),
             "teamName": "team " + ((leagueNum - 1)*20 + i),
-            "id": ((leagueNum - 1)*20 + i)
+            "id": -1
         };
         //var user = JSON.parse(body);
         teamsCollection.insert(team, function (err, data) {
@@ -249,8 +249,8 @@ var newTeamUser = function newTeamUser(detailsJson){
         obj["teamName"] = detailsJson.teamName;
         obj["coachName"] = detailsJson.name;
         obj["isBot"] = false;
-        obj["lastGameInfo.homeTeam"] ="---";
-        obj["lastGameInfo.awayTeam"] ="---";
+        obj["lastGameInfo.homeTeam"] = detailsJson.teamName;
+        obj["lastGameInfo.awayTeam"] = detailsJson.teamName +" U18";
         teamsCollection.update({"_id":id},{$set: obj},function(err,data){
             if(!data){
                 console.log("newTeamUser err",err);
@@ -292,7 +292,7 @@ var getTeamByKey = function getTeamById (key){
 
 var getTeamsInLeague = function getTeamsInLeague(league){
     var defer = Promise.defer();
-    teamsCollection.find({league: league},{teamName:1,"gamesHistory.thisSeason":1}).toArray(function(err, results){
+    teamsCollection.find({league: league},{teamName:1,"gamesHistory.thisSeason":1,"logo":1}).toArray(function(err, results){
         defer.resolve(results);
     });
     return defer.promise;

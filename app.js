@@ -110,6 +110,15 @@ app.post('/getInfoById', function (req, res) {
     }
 });
 
+app.post('/getTeamsInLeague', function (req, res) {
+    try {
+        reqHandler.getTeamsInLeague(req.body.league, res);
+    }catch (err){
+        console.log("error","getLeague");
+        res.status(502).send("error");
+    }
+});
+
 app.post('/coinClick',function(req,res){
     try {
         reqHandler.addCoinMoney(req, res);

@@ -117,6 +117,7 @@ function  initSeasonStatistics(team) {
     updateValue["gamesHistory.thisSeason.goalsAgainst"] = 0;
     updateValue["gamesHistory.thisSeason.homeGames"] = 0;
     updateValue["gamesHistory.thisSeason.crowd"] = 0;
+    updateValue["gamesHistory.thisSeason.goalsDifference"] = 0;
     updateValue["gamesHistory.thisSeason.points"] = 0;
 
     teamsHandler.updateTeamMulti(id,updateValue).then(function (data){

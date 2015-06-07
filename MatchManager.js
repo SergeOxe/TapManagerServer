@@ -38,6 +38,7 @@ var calcResult  = function  calcResult(i_HomeTeam, i_AwayTeam) {
     }else{
         results.push(squadHandler.getAllSquadRatingById(i_AwayTeam.id));
     }
+
     Promise.all(results).then(function(data){
         var sum = (data[0] > data[1]? data[0] + 2*data[1] : 2*data[0] + data[1])
         homeTeamOdds = data[0]/sum;
@@ -100,6 +101,7 @@ function  MatchInfo(i_HomeTeam, i_AwayTeam, i_HomeTeamGoals, i_AwayTeamGoals,  i
 }
 
 function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
+    //console.log(team,i_result,  i_matchInfo,  i_isHomeMatch);
     var defer = Promise.defer();
     var id = {};
     id["_id"] = team._id;

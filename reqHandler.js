@@ -139,7 +139,7 @@ var getInfoById = function getInfoById(id){
         json["nextMatch"] = data[7];
 
         teamsHandler.getTeamsInLeague(data[1].team.league).then(function (leagueData){
-            json["league"] = leagueData
+            json["league"] = leagueData;
             var obj = {};
             obj["isMessage"] = false;
             obj["message"] = [];
@@ -154,7 +154,7 @@ var getInfoById = function getInfoById(id){
 
 var getTeamsInLeague = function getTeamsInLeague(league,res){
     teamsHandler.getTeamsInLeague(league).then(function(data){
-        res.send({teams:data});
+        res.send(data);
     });
 }
 

@@ -233,7 +233,7 @@ var addNewBotSquad =  function addNewBotSquad(id){
     var obj = { "id" : id, "isBot" : true};
     for (var i = 0; i < 15 ; i++){
        var player = {
-            "id" : -1,
+            "id" : i,
             "position": 0,
             "firstName": "",
             "lastName": "",

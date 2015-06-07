@@ -300,6 +300,7 @@ var executeNextFixture = function  executeNextFixture(res){
         leagues.push(teamsHandler.getSortedTeams(i));
     };
     Promise.all(leagues).then(function (sortedTeams) {
+        //console.log("Promise enter",numOfLeagues);
         for (var j = 1; j <= numOfLeagues; j++) {
             var sortedTeamsLeague = sortedTeams[j];
             //console.log(sortedTeamsLeague);
@@ -311,13 +312,14 @@ var executeNextFixture = function  executeNextFixture(res){
                 matchManager.calcResult(teamObj1, teamObj2);
             }
         }
+        var curr = {};
+        curr["currentFixture"] = 1;
+        addValueToGameCollection({},curr);
+        m_currentFixture++;
+        lastGame = Date.now();
+        console.log("executeNextFixture",m_currentFixture,"ok");
     });
-    var curr = {};
-    curr["currentFixture"] = 1;
-    addValueToGameCollection({},curr);
-    m_currentFixture++;
-    lastGame = Date.now();
-    console.log("executeNextFixture","ok");
+
 //if (!res) {
     //res.send("ok");
 //}
@@ -429,7 +431,7 @@ var getOpponentById = function getOpponentById(id) {
 var getNextOpponentById = function getOpponentById(id) {
     var defer = Promise.defer();
     getIndexOfTeamById(id).then(function(data){
-        GetOpponentByTeamAndFixture(data,m_currentFixture+1).then(function(data){
+        GetOpponentByTeamAndFixture(data,(m_currentFixture+1)).then(function(data){
             defer.resolve(data);
         });
     });

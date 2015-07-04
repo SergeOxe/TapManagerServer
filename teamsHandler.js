@@ -131,7 +131,8 @@ var addNewNumTeam = function addNewNumTeam(num){
             "isDefaultName" : true,
             "logo": randomIntFromInterval(0,29),
             "teamName": "team " + ((leagueNum - 1)*20 + i),
-            "id": -1
+            "id": -1,
+            "totalInstantTrain":0
         };
         //var user = JSON.parse(body);
         teamsCollection.insert(team, function (err, data) {
@@ -158,6 +159,7 @@ var resetTeam = function resetTeam(id){
     obj["isDefaultName"] = true;
     obj["logo"] = randomIntFromInterval(0,29);
     obj["id"] = -1;
+    obj["totalInstantTrain"] = 0;
     updateTeamMulti({id:id},obj).then(function (data){
         if (err) {
             console.log("resetTeam", err);

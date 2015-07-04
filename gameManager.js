@@ -45,7 +45,7 @@ var setup = function setup(db){
         initPriceOfFans = data.pricesAndMultipliers.initPriceOfFans;
         initPriceOfFacilities = data.pricesAndMultipliers.initPriceOfFacilities;
         initPriceOfStadium = data.pricesAndMultipliers.initPriceOfStadium;
-        fansMultiplier = data.pricesAndMultipliers.facilitiesMultiplier;
+        fansMultiplier = data.pricesAndMultipliers.fansMultiplier;
         facilitiesMultiplier = data.pricesAndMultipliers.facilitiesMultiplier;
         stadiumMultiplier = data.pricesAndMultipliers.stadiumMultiplier;
         multiplierBoost = data.pricesAndMultipliers.multiplierBoost;
@@ -393,7 +393,7 @@ var getInitPriceOfFacilities = function getInitPriceOfFacilities(){
 }
 
 var getInitPriceOfStadium = function getInitPriceOfStadium(){
-    return multiplierBoost;
+    return initPriceOfStadium;
 }
 
 var getFansMultiplier = function getFansMultiplier(){

@@ -2,18 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bd90f3f2-c7c6-46a6-bcce-9063e0ca35f1" name="Default" comment="">
-      <change type="MOVED" beforePath="C:\Users\User\WebstormProjects\TapManager\MatchManager.js" afterPath="$PROJECT_DIR$/matchManager.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bucketHandler.js" afterPath="$PROJECT_DIR$/bucketHandler.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bugs.txt" afterPath="$PROJECT_DIR$/bugs.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/endOfSeason.js" afterPath="$PROJECT_DIR$/endOfSeason.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gameManager.js" afterPath="$PROJECT_DIR$/gameManager.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/index.html" afterPath="$PROJECT_DIR$/public/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reqHandler.js" afterPath="$PROJECT_DIR$/reqHandler.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/squadHandler.js" afterPath="$PROJECT_DIR$/squadHandler.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/teamsHandler.js" afterPath="$PROJECT_DIR$/teamsHandler.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/userHandler.js" afterPath="$PROJECT_DIR$/userHandler.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="TapManager.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,7 +32,7 @@
         <entry file="file://$PROJECT_DIR$/teamsHandler.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="180" column="39" selection-start-line="180" selection-start-column="39" selection-end-line="180" selection-end-column="39" />
+              <caret line="134" column="33" selection-start-line="134" selection-start-column="33" selection-end-line="134" selection-end-column="33" />
               <folding>
                 <element signature="e#264#441#0" expanded="false" />
                 <element signature="e#443#1581#0" expanded="false" />
@@ -74,7 +68,7 @@
         <entry file="file://$PROJECT_DIR$/gameManager.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="311" column="56" selection-start-line="311" selection-start-column="56" selection-end-line="311" selection-end-column="56" />
+              <caret line="130" column="55" selection-start-line="130" selection-start-column="55" selection-end-line="130" selection-end-column="55" />
               <folding />
             </state>
           </provider>
@@ -94,7 +88,7 @@
         <entry file="file://$PROJECT_DIR$/userHandler.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="162" column="43" selection-start-line="162" selection-start-column="43" selection-end-line="162" selection-end-column="43" />
+              <caret line="218" column="48" selection-start-line="218" selection-start-column="48" selection-end-line="218" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -103,13 +97,13 @@
       <file leaf-file-name="squadHandler.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/squadHandler.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="453" column="65" selection-start-line="453" selection-start-column="52" selection-end-line="453" selection-end-column="65" />
+            <state vertical-scroll-proportion="-6.965517">
+              <caret line="358" column="27" selection-start-line="358" selection-start-column="27" selection-end-line="358" selection-end-column="27" />
               <folding>
-                <element signature="e#498#1758#0" expanded="false" />
-                <element signature="e#1776#2730#0" expanded="false" />
-                <element signature="e#6717#7047#0" expanded="false" />
-                <element signature="e#11198#12218#0" expanded="false" />
+                <element signature="e#543#1803#0" expanded="false" />
+                <element signature="e#1821#2775#0" expanded="false" />
+                <element signature="e#6767#7097#0" expanded="false" />
+                <element signature="e#11673#12693#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -118,8 +112,8 @@
       <file leaf-file-name="matchManager.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/matchManager.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="64" column="10" selection-start-line="64" selection-start-column="10" selection-end-line="64" selection-end-column="10" />
+            <state vertical-scroll-proportion="-96.13793">
+              <caret line="166" column="35" selection-start-line="166" selection-start-column="35" selection-end-line="166" selection-end-column="35" />
               <folding>
                 <element signature="e#0#39#0" expanded="false" />
               </folding>
@@ -127,11 +121,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="82" column="25" selection-start-line="82" selection-start-column="25" selection-end-line="82" selection-end-column="25" />
+            <state vertical-scroll-proportion="0.69873416">
+              <caret line="140" column="43" selection-start-line="140" selection-start-column="43" selection-end-line="140" selection-end-column="43" />
               <folding>
                 <element signature="e#0#39#0" expanded="false" />
               </folding>
@@ -139,14 +133,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="reqHandler.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="reqHandler.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/reqHandler.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.21709402">
-              <caret line="227" column="22" selection-start-line="227" selection-start-column="22" selection-end-line="227" selection-end-column="22" />
+            <state vertical-scroll-proportion="-8.448276">
+              <caret line="303" column="42" selection-start-line="303" selection-start-column="42" selection-end-line="303" selection-end-column="42" />
               <folding>
-                <element signature="e#3539#4736#0" expanded="false" />
-                <element signature="e#4789#5344#0" expanded="false" />
+                <element signature="e#5584#5721#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -179,13 +172,13 @@
         <option value="$USER_HOME$/AppData/Local/Temp/Rar$DIa0.081/reqHandler.js" />
         <option value="$PROJECT_DIR$/public/index.html" />
         <option value="$USER_HOME$/Desktop/EX1-Cloud/server.js" />
-        <option value="$PROJECT_DIR$/teamsHandler.js" />
         <option value="$PROJECT_DIR$/endOfSeason.js" />
+        <option value="$PROJECT_DIR$/bucketHandler.js" />
+        <option value="$PROJECT_DIR$/bugs.txt" />
         <option value="$PROJECT_DIR$/userHandler.js" />
         <option value="$PROJECT_DIR$/gameManager.js" />
         <option value="$PROJECT_DIR$/matchManager.js" />
-        <option value="$PROJECT_DIR$/bucketHandler.js" />
-        <option value="$PROJECT_DIR$/bugs.txt" />
+        <option value="$PROJECT_DIR$/teamsHandler.js" />
         <option value="$PROJECT_DIR$/squadHandler.js" />
         <option value="$PROJECT_DIR$/reqHandler.js" />
         <option value="$PROJECT_DIR$/app.js" />
@@ -375,13 +368,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="0" width="1382" height="744" extended-state="1" />
-    <editor active="true" />
+    <frame x="-8" y="0" width="1382" height="744" extended-state="0" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21205357" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20238096" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20621762" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4208809" sideWeight="0.5119048" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32626426" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952693" sideWeight="0.4940476" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30995107" sideWeight="0.48809522" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973656" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -393,7 +387,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32789558" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -455,8 +448,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="89" column="33" selection-start-line="89" selection-start-column="33" selection-end-line="89" selection-end-column="33" />
           <folding>
-            <element signature="e#3539#4736#0" expanded="false" />
-            <element signature="e#4789#5344#0" expanded="false" />
+            <element signature="e#5584#5721#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -527,8 +519,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="71" column="0" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
           <folding>
-            <element signature="e#3539#4736#0" expanded="false" />
-            <element signature="e#4789#5344#0" expanded="false" />
+            <element signature="e#5584#5721#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -582,8 +573,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="19" column="27" selection-start-line="19" selection-start-column="27" selection-end-line="19" selection-end-column="27" />
           <folding>
-            <element signature="e#3539#4736#0" expanded="false" />
-            <element signature="e#4789#5344#0" expanded="false" />
+            <element signature="e#5584#5721#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -779,24 +769,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gameManager.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="311" column="56" selection-start-line="311" selection-start-column="56" selection-end-line="311" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/matchManager.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="64" column="10" selection-start-line="64" selection-start-column="10" selection-end-line="64" selection-end-column="10" />
-          <folding>
-            <element signature="e#0#39#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bugs.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -805,10 +777,36 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/userHandler.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="218" column="48" selection-start-line="218" selection-start-column="48" selection-end-line="218" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gameManager.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="130" column="55" selection-start-line="130" selection-start-column="55" selection-end-line="130" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/matchManager.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-96.13793">
+          <caret line="166" column="35" selection-start-line="166" selection-start-column="35" selection-end-line="166" selection-end-column="35" />
+          <folding>
+            <element signature="e#0#39#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/teamsHandler.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="180" column="39" selection-start-line="180" selection-start-column="39" selection-end-line="180" selection-end-column="39" />
+          <caret line="134" column="33" selection-start-line="134" selection-start-column="33" selection-end-line="134" selection-end-column="33" />
           <folding>
             <element signature="e#264#441#0" expanded="false" />
             <element signature="e#443#1581#0" expanded="false" />
@@ -817,23 +815,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/userHandler.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="162" column="43" selection-start-line="162" selection-start-column="43" selection-end-line="162" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/squadHandler.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="453" column="65" selection-start-line="453" selection-start-column="52" selection-end-line="453" selection-end-column="65" />
+        <state vertical-scroll-proportion="-6.965517">
+          <caret line="358" column="27" selection-start-line="358" selection-start-column="27" selection-end-line="358" selection-end-column="27" />
           <folding>
-            <element signature="e#498#1758#0" expanded="false" />
-            <element signature="e#1776#2730#0" expanded="false" />
-            <element signature="e#6717#7047#0" expanded="false" />
-            <element signature="e#11198#12218#0" expanded="false" />
+            <element signature="e#543#1803#0" expanded="false" />
+            <element signature="e#1821#2775#0" expanded="false" />
+            <element signature="e#6767#7097#0" expanded="false" />
+            <element signature="e#11673#12693#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -846,23 +836,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.js">
+    <entry file="file://$PROJECT_DIR$/reqHandler.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="82" column="25" selection-start-line="82" selection-start-column="25" selection-end-line="82" selection-end-column="25" />
+        <state vertical-scroll-proportion="-8.448276">
+          <caret line="303" column="42" selection-start-line="303" selection-start-column="42" selection-end-line="303" selection-end-column="42" />
           <folding>
-            <element signature="e#0#39#0" expanded="false" />
+            <element signature="e#5584#5721#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reqHandler.js">
+    <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.21709402">
-          <caret line="227" column="22" selection-start-line="227" selection-start-column="22" selection-end-line="227" selection-end-column="22" />
+        <state vertical-scroll-proportion="0.69873416">
+          <caret line="140" column="43" selection-start-line="140" selection-start-column="43" selection-end-line="140" selection-end-column="43" />
           <folding>
-            <element signature="e#3539#4736#0" expanded="false" />
-            <element signature="e#4789#5344#0" expanded="false" />
+            <element signature="e#0#39#0" expanded="false" />
           </folding>
         </state>
       </provider>

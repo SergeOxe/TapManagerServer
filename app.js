@@ -78,6 +78,15 @@ app.post('/playerBoostClick', function(req,res){
     }
 });
 
+app.post('/boostPlayerLevelUp', function(req,res){
+    try{
+        reqHandler.boostPlayerLevelUp(req,res);
+    }catch (err){
+        console.log("error","playerBoostClick");
+        res.status(502).send("error");
+    }
+});
+
 app.post('/changePlayerName', function(req,res){
     try {
         reqHandler.changePlayerName(req, res);
@@ -121,6 +130,15 @@ app.post('/getInfoById', function (req, res) {
         });
     }catch (err){
         console.log("error","getInfoById");
+        res.status(502).send("error");
+    }
+});
+
+app.post('/messageWasRead', function (req, res) {
+    try {
+        reqHandler.messageWasRead(req.body.id, res);
+    }catch (err){
+        console.log("error","messageWasRead");
         res.status(502).send("error");
     }
 });

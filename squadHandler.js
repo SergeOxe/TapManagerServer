@@ -4,6 +4,7 @@
 var Promise = require('bluebird');
 var userHandler = require("./userHandler");
 var gameManager = require("./gameManager");
+var teamHandler = require("./teamsHandler");
 var squadCollection;
 
 var MIN_SALARY = 100,MAX_SALARY = 1000;
@@ -256,10 +257,10 @@ var addNewBotSquad =  function addNewBotSquad(id){
             "goalsScored": 0,
             "level": 0,
             "price": 0,
-            "priceToBoost": 1000,
+            "priceToBoost": 0,
             "currentBoost" : 0,
             "nextBoost" : 100,
-            "boost": 34,
+            "boost": 10,
             "isPlaying": true,
             "yearJoinedTheClub": 0,
             "playerImage": 0
@@ -276,14 +277,14 @@ var addNewBotSquad =  function addNewBotSquad(id){
         }
         player.firstName = getRandomFirstName();
         player.lastName = getRandomLastName();
-        player.salary = randomIntFromInterval(MIN_SALARY,MAX_SALARY);
+        //player.salary = randomIntFromInterval(MIN_SALARY,MAX_SALARY);
         player.isInjured = false;
         player.age = randomIntFromInterval(MIN_AGE,MAX_AGE);
         //player.level = randomIntFromInterval(MIN_PLAYER_LEVEL,MAX_PLAYER_LEVEL);
         player.level = 1;
-        player.price = randomIntFromInterval(MIN_PLAYER_PRICE,MAX_PLAYER_PRICE);
-        player.priceToBoost = randomIntFromInterval(MIN_PRICE_TO_BOOST,MAX_PRICE_TO_BOOST);
-        player.boost  = randomIntFromInterval(MIN_BOOST,MAX_BOOST);
+        //player.price = randomIntFromInterval(MIN_PLAYER_PRICE,MAX_PLAYER_PRICE);
+        //player.priceToBoost = randomIntFromInterval(MIN_PRICE_TO_BOOST,MAX_PRICE_TO_BOOST);
+        //player.boost  = randomIntFromInterval(MIN_BOOST,MAX_BOOST);
         if(i > 10){
             player.isPlaying = false;
         }
@@ -337,59 +338,36 @@ function boostPlayer(id,indexPlayer){
     var defer = Promise.defer();
     var results = [];
     results.push(getSquadById(id));
-    results.push(userHandler.getUserById(id));
+    results.push(teamHandler.getTeamById(id));
     Promise.all(results).then(function(data){
-        var money = data[1].money;
+        var team = data[1];
         var player = data[0].players[indexPlayer];
         var nextBoost = player.nextBoost;
+        var playerBoost = 10 * (team.shop.facilitiesLevel + 1);
         var obj = {};
         var promises = [];
         var find = {};
         find["id"] = id;
-        if (money >= player.priceToBoost){
-            if(player.boost + player.currentBoost >= player.nextBoost){
-                obj["players."+indexPlayer +".currentBoost"] =  (player.boost + player.currentBoost)%player.nextBoost;
-                obj["players."+indexPlayer +".nextBoost"] = player.nextBoost * 2;
-                obj["players."+indexPlayer +".priceToBoost"] = player.priceToBoost * gameManager.getMultiplierBoost();
-                //obj["players."+indexPlayer +".boost"] = player.boost;
-                obj["players."+indexPlayer +".level"] = player.level + 1;
-                obj["players."+indexPlayer +".salary"] = player.salary *1.1;
-                obj["players."+indexPlayer +".price"] = player.price *1.25;
-                var message = {"header":"Level up","content":player.firstName + " "+player.lastName+" is level "+ (player.level + 1) + " now" };
-                userHandler.addMessageToUser(id,message);
-            }else{
-                obj["players."+indexPlayer +".currentBoost"] =  player.boost + player.currentBoost;
-            }
-            promises.push(userHandler.addMoneyToUser(id,-player.priceToBoost));
-            promises.push(updateSquad(find,obj));
-            Promise.all(promises).then(function(data){
-                if (data == "null"){
-                    defer.resolve("null");
-                }else{
-                    defer.resolve("ok");
-                }
-            })
-        }else{
-            defer.resolve("null");
-        }
-    });
-    return defer.promise;
-}
+        if(playerBoost + player.currentBoost >= player.nextBoost){
+            obj["players."+indexPlayer +".currentBoost"] =  (playerBoost + player.currentBoost)%player.nextBoost;
+            obj["players."+indexPlayer +".nextBoost"] = player.nextBoost * 2;
+            //obj["players."+indexPlayer +".priceToBoost"] = player.priceToBoost * gameManager.getMultiplierBoost();
+            //obj["players."+indexPlayer +".boost"] = playerBoost;
+            obj["players."+indexPlayer +".level"] = player.level + 1;
+            //obj["players."+indexPlayer +".salary"] = player.salary *1.1;
+            //obj["players."+indexPlayer +".price"] = player.price *1.25;
+            var message = {
+                "header":"Level up",
+                "content":player.firstName + " "+player.lastName+" is level "+ (player.level + 1) + " now"
+            };
 
-var boostPlayerLevelUp = function boostPlayerLevelUp(id,indexPlayer) {
-    var defer = Promise.defer();
-    getSquadById(id).then(function(data){
-        var player = data[0].players[indexPlayer];
-        var nextBoost = player.nextBoost;
-        var obj = {};
-        var find = {};
-        find["id"] = id;
-        obj["players."+indexPlayer +".nextBoost"] = player.nextBoost * 1.5;
-        obj["players."+indexPlayer +".priceToBoost"] = player.priceToBoost * gameManager.getMultiplierBoost();
-        obj["players."+indexPlayer +".level"] = player.level + 1;
-        var message = {"header":"Level up","content":player.firstName + " "+player.lastName+" is level "+ (player.level + 1) + " now" };
-        userHandler.addMessageToUser(id,message);
-        updateSquad(find,obj).then(function(data){
+            userHandler.addMessageToUser(id,message);
+        }else{
+            obj["players."+indexPlayer +".currentBoost"] =  playerBoost + player.currentBoost;
+        }
+        //promises.push(userHandler.addMoneyToUser(id,-player.priceToBoost));
+        promises.push(updateSquad(find,obj));
+        Promise.all(promises).then(function(data){
             if (data == "null"){
                 defer.resolve("null");
             }else{
@@ -397,6 +375,45 @@ var boostPlayerLevelUp = function boostPlayerLevelUp(id,indexPlayer) {
             }
         });
     });
+    return defer.promise;
+}
+
+var boostPlayerLevelUp = function boostPlayerLevelUp(id,indexPlayer) {
+    var defer = Promise.defer();
+    var results = [];
+    results.push(getSquadById(id));
+    results.push(teamHandler.getTeamById(id));
+    Promise.all(results).then(function(data){
+        var team = data[1];
+        var player = data[0].players[indexPlayer];
+        var nextBoost = player.nextBoost;
+        var obj = {};
+        var find = {};
+        find["id"] = id;
+        if(team.totalInstantTrain > 0) {
+            var instantTrain = {};
+            instantTrain["totalInstantTrain"] = -1;
+            obj["players." + indexPlayer + ".nextBoost"] = player.nextBoost * 1.5;
+            obj["players." + indexPlayer + ".priceToBoost"] = player.priceToBoost * gameManager.getMultiplierBoost();
+            obj["players." + indexPlayer + ".level"] = player.level + 1;
+            var message = {
+                "header": "Level up",
+                "content": player.firstName + " " + player.lastName + " is level " + (player.level + 1) + " now"
+            };
+            teamHandler.addValueToTeamMulti(find,instantTrain);
+            userHandler.addMessageToUser(id, message);
+            updateSquad(find, obj).then(function (data) {
+                if (data == "null") {
+                    defer.resolve("null");
+                } else {
+                    defer.resolve("ok");
+                }
+            });
+        }else{
+            defer.resolve("null");
+        }
+    });
+
     return defer.promise;
 };
 
@@ -460,7 +477,11 @@ var changePlayerName = function changePlayerName(id,playerDetails) {
         find["id"] = id;
         obj["players."+indexPlayer +".firstName"] = playerDetails.firstName;
         obj["players."+indexPlayer +".lastName"] = playerDetails.lastName;
-        var message = {"header":"Player name was changed","content":player.firstName + " "+player.lastName+" is now "+  playerDetails.firstName + " " + playerDetails.lastName };
+        var message = {
+            "header":"Player name was changed",
+            "content":player.firstName + " "+player.lastName+" is now "+  playerDetails.firstName + " " + playerDetails.lastName
+        };
+
         userHandler.addMessageToUser(id,message);
         updateSquad(find,obj).then(function(data){
             if (data == "null"){

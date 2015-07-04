@@ -121,6 +121,7 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
     id["_id"] = team._id;
     var updateValue = {};
     var addValue = {};
+    var instantTrain  = 0;
     if (i_result == 0) {
         addValue["gamesHistory.thisSeason.points"] = 3;
         addValue["gamesHistory.thisSeason.wins"] = 1;
@@ -129,6 +130,8 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         addValue["statistics.currentUndefeatedStreak"] =1 ;
         addValue["additionalFans"] = 25;
 
+        addValue["totalInstantTrain"] = 2;
+        instantTrain = 2;
 
         updateValue["lastResult"]= 0;
         updateValue["statistics.currentLoseStreak"] = 0;
@@ -139,6 +142,10 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         addValue["gamesHistory.allTime.losts"] = 1;
         addValue["statistics.currentLoseStreak"] = 1;
         addValue["statistics.currentWinlessStreak"] = 1;
+
+        addValue["totalInstantTrain"] = 0;
+        instantTrain = 0;
+
         if (team.gamesHistory.thisSeason.crowd - 10 > 0) {
             addValue["additionalFans"] = -10;
         }else {
@@ -156,6 +163,9 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         addValue["statistics.currentUndefeatedStreak"] = 1;
         addValue["statistics.currentWinlessStreak"] = 1;
         addValue["additionalFans"] = 13;
+
+        addValue["totalInstantTrain"] = 1;
+        instantTrain = 1;;
 
         updateValue["lastResult"]= 2;
         updateValue["statistics.currentWinStreak"] = 0;
@@ -206,7 +216,7 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
 
     updateValue["isLastGameIsHomeGame"] = i_isHomeMatch;
     if(!team.isBot) {
-        squadHandler.addBoostToAllPlayers(team.id);
+        //squadHandler.addBoostToAllPlayers(team.id);
         squadHandler.addGaolToMultiPlayer(team.id,playersScore);
         //Expenses
         var ticketPrice = (team.shop.stadiumLevel + 1) * gameManager.getTicketPrice();
@@ -220,7 +230,8 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
            updateValue["finance.facilitiesCost"] = facilitiesCost;
            updateValue["finance.stadiumCost"] = stadiumCost;
            updateValue["finance.salary"] = salary;
-           userHandler.addMoneyToUser(team.id,incomeFromTickets + incomeFromMerchandise - facilitiesCost - stadiumCost - salary);
+           updateValue["finance.instantTrain"] = instantTrain;
+           userHandler.addMoneyToUser(team.id,(incomeFromTickets + incomeFromMerchandise));
            teamsHandler.addValueToTeamMulti(id,addValue);
            teamsHandler.updateTeamMulti(id,updateValue);
            checkRecords (id).then(function(data){

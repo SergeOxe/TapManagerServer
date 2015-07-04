@@ -202,7 +202,7 @@ var updateMultiValueToUser = function updateMultiValueToUser (id,obj){
     return defer.promise;
 }
 
-var upgradeItem = function upgradeFans(id,item) {
+var upgradeItem = function upgradeItem(id,item) {
     var defer = Promise.defer();
     var results = [];
     results.push(teamsHandler.getTeamById(id));

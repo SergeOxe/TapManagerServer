@@ -159,6 +159,14 @@ var getInfoById = function getInfoById(id){
     return defer.promise;
 }
 
+var messageWasRead = function messageWasRead(id,res){
+    var obj = {};
+    obj["isMessage"] = false;
+    obj["message"] = [];
+    userHandler.updateMultiValueToUser(id,obj);
+    res.send("ok");
+}
+
 var connectWithFB = function connectWithFB(id,FBid){
     var defer = Promise.defer();
     var results = [];
@@ -229,6 +237,12 @@ var boostPlayer = function boostPlayer(req,res){
     });
 }
 
+var boostPlayerLevelUp = function boostPlayerLevelUp(){
+    squadHandler.boostPlayerLevelUp(req.body.id,req.body.playerId).then(function(data){
+        res.send(data);
+    });
+};
+
 var changePlayerName = function changePlayerName(req,res){
     squadHandler.changePlayerName(req.body.id,req.body.playerDetails).then(function(data){
         res.send(data);
@@ -287,3 +301,6 @@ module.exports.connectWithFB = connectWithFB;
 module.exports.deleteUser = deleteUser;
 
 module.exports.changePlayerName = changePlayerName;
+module.exports.boostPlayerLevelUp = boostPlayerLevelUp;
+
+module.exports.messageWasRead = messageWasRead;

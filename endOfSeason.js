@@ -11,6 +11,7 @@ var reqHandler = require("./reqHandler");
 
 
 
+
 var endOfSeason = function endOfSeason(){
     var defer = Promise.defer();
     var fixture = {};
@@ -30,7 +31,7 @@ var endOfSeason = function endOfSeason(){
     Promise.all(leagues).then(function(leaguesTeams){
         for(var j = 0 ; j < numOfLeagues ; j++){
             var teams = leaguesTeams[j];
-            var upMessage = {"header": "League", "content":"Congratulations you made to the next league!"};
+            var upMessage = {"header": "League", "content":"Congratulations you made it to the next league!"};
             var downMessage = {"header":"League" , "content":"Better luck next time!"};
             results.push(giveBonusToTeams(teams, j));
             for (var i = 0 ; i< 20 ; i++){
@@ -81,12 +82,13 @@ var endOfSeason = function endOfSeason(){
         }
     });
     Promise.all(results).then(function(data){
+        userHandler.clearNotActiveUsers();
         gameManager.initFixtures();
         reqHandler.gameManagerSetup();
         defer.resolve("ok");
     });
     return defer.promise;
-}
+};
 
 function giveBonusToTeams(sortedTeamsLeague, leagueNum){
     var defer = Promise.defer();
@@ -94,7 +96,8 @@ function giveBonusToTeams(sortedTeamsLeague, leagueNum){
     var message ={"header":"Bonus","content": "You got bonus of "};
     for (var i = 0 ; i < 20 ; i++){
         if(sortedTeamsLeague[i].id != -1) {
-            message[0].content += ((20 - i) * 100000 * leagueNum) + " coins";
+            //console.log("giveBonusToTeams",(20 - i) * 10000 * leagueNum );
+            message.content +=""+ ((20 - i) * 10000 * leagueNum) + " coins ";
             results.push(userHandler.addMoneyToUser(sortedTeamsLeague[i].id, (20 - i) * 100000 * leagueNum));
             results.push(userHandler.addMessageToUser(sortedTeamsLeague[i].id,message));
         }
@@ -105,7 +108,9 @@ function giveBonusToTeams(sortedTeamsLeague, leagueNum){
     return defer.promise;
 }
 
+
 function  initSeasonStatistics(team) {
+    //console.log(team.teamName ,"init");
     var defer = Promise.defer();
     var id = {};
     id["_id"] = team._id;
@@ -131,7 +136,7 @@ function  initSeasonStatistics(team) {
 var createNewLeagues = function createNewLeagues(){
     var defer = Promise.defer();
     var results = [];
-    if (leagueHandker.getNumOfLeagues() == 20){
+    if (leagueHandler.getNumOfLeagues() == 20){
         for (var i = 1; i <= 20 ; i++) {
             leagueHandler.getSortedTeamsByPoints(i).then(function (teams){
                 for (var j = 0 ; j < 20 ; j++){

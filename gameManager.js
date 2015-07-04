@@ -115,7 +115,7 @@ function getLeagueSetup() {
                         currentSeason:0,
                         lastGame: Date.now(),
                         users: 0,
-                        timeIntervalInHours : 0.0833,
+                        timeIntervalInHours : 0.166,
                         fixturesLists : generateFixtures(),
                         pricesAndMultipliers:{
                             multiplierBoost : 1.5,
@@ -296,6 +296,7 @@ var executeNextFixture = function  executeNextFixture(res){
     }
     var leagues = [];
     leagues.push([]);
+    console.log(numOfLeagues);
     for (var  i = 1; i <= numOfLeagues ; i++){
         leagues.push(teamsHandler.getSortedTeams(i));
     };
@@ -431,7 +432,7 @@ var getOpponentById = function getOpponentById(id) {
 var getNextOpponentById = function getOpponentById(id) {
     var defer = Promise.defer();
     getIndexOfTeamById(id).then(function(data){
-        GetOpponentByTeamAndFixture(data,(m_currentFixture+1)).then(function(data){
+        GetOpponentByTeamAndFixture(data,(m_currentFixture)).then(function(data){
             defer.resolve(data);
         });
     });

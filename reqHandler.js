@@ -71,7 +71,6 @@ var addNewBucket = function addNewBucket(req,res){
 var getUserById = function getUserById (user,res){
     //console.log(user);
     userHandler.getUserById(user,res).then(function(data){
-        console.log(data.user);
         res.send(data.user);
     });
 }
@@ -106,13 +105,21 @@ var changeBotTeamName = function changeBotTeamName(req,res){
 }
  var newUser = function newUser(details,res){
      var results = [];
-     results.push(userHandler.addNewUser(details));
-     results.push(teamsHandler.newTeamUser(details));
-     results.push(bucketHandler.addNewBucket(details));
-     results.push(squadHandler.newSquadForUser(details));
-     Promise.all(results).then(function(data){
+     var json = JSON.stringify(details);
+     console.log(json);
 
-         res.send("ok");
+     userHandler.loginUser(json,res).then(function(data){
+         if(data == "null") {
+             results.push(userHandler.addNewUser(details));
+             results.push(teamsHandler.newTeamUser(details));
+             results.push(bucketHandler.addNewBucket(details));
+             results.push(squadHandler.newSquadForUser(details));
+             Promise.all(results).then(function (data) {
+                 res.send("ok");
+             })
+         }else{
+             res.send("ok");
+         }
      })
  }
 
@@ -150,6 +157,31 @@ var getInfoById = function getInfoById(id){
         //console.log(json);
     })
     return defer.promise;
+}
+
+var connectWithFB = function connectWithFB(id,FBid){
+    var defer = Promise.defer();
+    var results = [];
+    var playerId = {id : id};
+    var obj = {id : FBid};
+    var userObj = {};
+    userObj["id"] = FBid;
+    userObj["connectWithFB"] = true;
+    results.push(userHandler.updateMultiValueToUser(id,userObj));
+    results.push(teamsHandler.updateTeamMulti(playerId,obj));
+    results.push(bucketHandler.updateBucket(id,"id",FBid));
+    results.push(squadHandler.updateSquad(playerId,obj));
+    Promise.all(results).then(function(data){
+        defer.resolve("ok");
+    });
+    return defer.promise;
+}
+
+var deleteUser = function deleteUser(id){
+    userHandler.deleteUser(id);
+    bucketHandler.deleteBucket(id);
+    squadHandler.deleteSquad(id);
+    teamsHandler.resetTeam(id);
 }
 
 var getTeamsInLeague = function getTeamsInLeague(league,res){
@@ -194,6 +226,12 @@ var addCoinMoney = function addCoinMoney(req,res){
 var boostPlayer = function boostPlayer(req,res){
     squadHandler.boostPlayer(req.body.id,req.body.playerId).then(function(data){
        res.send(data);
+    });
+}
+
+var changePlayerName = function changePlayerName(req,res){
+    squadHandler.changePlayerName(req.body.id,req.body.playerDetails).then(function(data){
+        res.send(data);
     });
 }
 
@@ -242,5 +280,10 @@ module.exports.newUser = newUser;
 module.exports.getTeamsInLeague = getTeamsInLeague;
 module.exports.addNewBucket = addNewBucket;
 module.exports.loginUser = loginUser;
-module.exports.changeBotTeamName =changeBotTeamName;
+module.exports.changeBotTeamName = changeBotTeamName;
 module.exports.gameManagerSetup = gameManagerSetup;
+
+module.exports.connectWithFB = connectWithFB;
+module.exports.deleteUser = deleteUser;
+
+module.exports.changePlayerName = changePlayerName;

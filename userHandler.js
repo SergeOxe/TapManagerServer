@@ -6,6 +6,10 @@ var gameManager = require("./gameManager");
 var teamsHandler = require("./teamsHandler");
 var userCollection;
 
+var monthInMilliSeconds = 2628000000;
+//var monthInMilliSeconds = 1000;
+
+
 var setup = function setup(db){
     db.collection("Users",function(err, data) {
         if(!err) {
@@ -19,6 +23,7 @@ var setup = function setup(db){
 var loginUser = function loginUser (body,res){
     var defer = Promise.defer();
     var user = JSON.parse(body);
+
 
     userCollection.findOne({id:user.id},function(err,data) {
         if (!data) {
@@ -40,10 +45,16 @@ var loginUser = function loginUser (body,res){
 var addNewUser = function addNewUser (body){
     var defer = Promise.defer();
     var message = [];
+    var withFB = false;
     message.push({header:"Welcome To Tap Manager","content":" You got 1000000"});
+
+    if (!isNaN(body.id)){
+        withFB = true;
+    }
     var obj = {
             //email:user.email,
             id: body.id,
+            connectWithFB:withFB,
             name:body.name,
             currentLeague:0,
             coinValue: 200,
@@ -54,7 +65,7 @@ var addNewUser = function addNewUser (body){
             }
     userCollection.insert(obj,function(err,data){
         if(err){
-            console.log("addNewTeam",err);
+            console.log("addNewUser",err);
             defer.resolve("null");
         }else{
             //console.log("addNewTeam","Ok");
@@ -63,6 +74,16 @@ var addNewUser = function addNewUser (body){
             defer.resolve("ok");
         }});
     return defer.promise;
+}
+
+var deleteUser = function deleteUser(id){
+    console.log("Deleting user: " + id);
+    userCollection.remove({id:id},function(err,data){
+        if(!data){
+            console.log("deleteUser err",err);
+        }else{
+            gameManager.addValueToGameCollection({},{"users" : -1});
+        }});
 }
 
 var getUserById = function getUserById (id){
@@ -78,6 +99,7 @@ var getUserById = function getUserById (id){
         }});
     return defer.promise;
 }
+
 
 var updateUser = function updateUser (id,Key,value){
     var defer = Promise.defer();
@@ -236,12 +258,26 @@ var addCoinMoney = function addCoinMoney(id,clicks){
 
     });
     return defer.promise;
-}
+};
+
+var clearNotActiveUsers = function clearNotActiveUsers(){
+    console.log("Enter clearNotActiveUsers");
+    var date = Date.now();
+    userCollection.find({connectWithFB : false},{id:1,"lastLogin":1}).toArray(function(err, results){
+        if(!err){
+            results.forEach(function(user){
+                if((date - user.lastLogin) > monthInMilliSeconds){
+                    deleteUser(user.id)
+                }
+            });
+        }
+    });
+};
 
 var deleteDB = function deleteDB(){
     userCollection.remove({},function(err,data){
     });
-}
+};
 
 module.exports.deleteDB = deleteDB;
 module.exports.addMoneyToUser = addMoneyToUser;
@@ -256,3 +292,6 @@ module.exports.getUserById = getUserById;
 module.exports.setup = setup;
 module.exports.addMessageToUser = addMessageToUser;
 module.exports.updateMultiValueToUser = updateMultiValueToUser;
+
+module.exports.deleteUser = deleteUser;
+module.exports.clearNotActiveUsers = clearNotActiveUsers;

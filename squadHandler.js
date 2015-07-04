@@ -226,6 +226,18 @@ var newSquadForUser = function newSquadForUser (detailsJson,res){
 
 }
 
+//Deletes user squad and add one bot squad.
+var deleteSquad = function deleteSquad(id){
+    squadCollection.remove({id:id},function(err,data){
+        if(!data){
+            console.log("deleteUser err",err);
+        }else{
+            //console.log("deleteBucket","ok");
+            addNewBotSquad(-1)
+        }});
+
+}
+
 var addNewBotSquad =  function addNewBotSquad(id){
     var defer = Promise.defer();
     var year =new Date().getFullYear();
@@ -267,7 +279,8 @@ var addNewBotSquad =  function addNewBotSquad(id){
         player.salary = randomIntFromInterval(MIN_SALARY,MAX_SALARY);
         player.isInjured = false;
         player.age = randomIntFromInterval(MIN_AGE,MAX_AGE);
-        player.level = randomIntFromInterval(MIN_PLAYER_LEVEL,MAX_PLAYER_LEVEL);
+        //player.level = randomIntFromInterval(MIN_PLAYER_LEVEL,MAX_PLAYER_LEVEL);
+        player.level = 1;
         player.price = randomIntFromInterval(MIN_PLAYER_PRICE,MAX_PLAYER_PRICE);
         player.priceToBoost = randomIntFromInterval(MIN_PRICE_TO_BOOST,MAX_PRICE_TO_BOOST);
         player.boost  = randomIntFromInterval(MIN_BOOST,MAX_BOOST);
@@ -363,6 +376,29 @@ function boostPlayer(id,indexPlayer){
     return defer.promise;
 }
 
+var boostPlayerLevelUp = function boostPlayerLevelUp(id,indexPlayer) {
+    var defer = Promise.defer();
+    getSquadById(id).then(function(data){
+        var player = data[0].players[indexPlayer];
+        var nextBoost = player.nextBoost;
+        var obj = {};
+        var find = {};
+        find["id"] = id;
+        obj["players."+indexPlayer +".nextBoost"] = player.nextBoost * 1.5;
+        obj["players."+indexPlayer +".priceToBoost"] = player.priceToBoost * gameManager.getMultiplierBoost();
+        obj["players."+indexPlayer +".level"] = player.level + 1;
+        var message = {"header":"Level up","content":player.firstName + " "+player.lastName+" is level "+ (player.level + 1) + " now" };
+        userHandler.addMessageToUser(id,message);
+        updateSquad(find,obj).then(function(data){
+            if (data == "null"){
+                defer.resolve("null");
+            }else{
+                defer.resolve("ok");
+            }
+        });
+    });
+    return defer.promise;
+};
 
 
 function addGaolToMultiPlayer(id,indexPlayers){
@@ -415,6 +451,28 @@ var addBoostToAllPlayers = function addBoostToAllPlayers(id) {
     return defer.promise;
 }
 
+var changePlayerName = function changePlayerName(id,playerDetails) {
+    var defer = Promise.defer();
+    getSquadById(id).then(function(data){
+        var player = data[0].players[playerDetails.indexPlayer];
+        var obj = {};
+        var find = {};
+        find["id"] = id;
+        obj["players."+indexPlayer +".firstName"] = playerDetails.firstName;
+        obj["players."+indexPlayer +".lastName"] = playerDetails.lastName;
+        var message = {"header":"Player name was changed","content":player.firstName + " "+player.lastName+" is now "+  playerDetails.firstName + " " + playerDetails.lastName };
+        userHandler.addMessageToUser(id,message);
+        updateSquad(find,obj).then(function(data){
+            if (data == "null"){
+                defer.resolve("null");
+            }else{
+                defer.resolve("ok");
+            }
+        });
+    });
+    return defer.promise;
+};
+
 var getAllSquadSalaryById = function getAllSquadSalaryById(id) {
     var defer = Promise.defer();
     var find = {};
@@ -442,7 +500,7 @@ var getAllSquadRatingById = function getAllSquadRatingById(id) {
     find["id"] = id;
     getSquadById(id).then(function (data) {
         if (data == null){
-            defer.resolve(randomIntFromInterval(10,50));
+            defer.resolve(randomIntFromInterval(10,20));
             return;
         }
 
@@ -521,3 +579,9 @@ module.exports.newSquadForUser = newSquadForUser;
 module.exports.addNewBotSquad = addNewBotSquad;
 module.exports.getBotSquad = getBotSquad;
 module.exports.getSquadById = getSquadById;
+
+module.exports.boostPlayerLevelUp = boostPlayerLevelUp;
+module.exports.updateSquad = updateSquad;
+module.exports.deleteSquad = deleteSquad;
+
+module.exports.changePlayerName = changePlayerName;

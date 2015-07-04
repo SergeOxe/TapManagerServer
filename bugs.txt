@@ -1,2 +1,3 @@
 When adding new teams to DB -GameManager should be updated.
-Teams sorted by points - ignores goal difference.
+-Teams sorted by points - ignores goal difference.
+-Multiple users with the same id.

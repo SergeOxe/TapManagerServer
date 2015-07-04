@@ -8,6 +8,8 @@ var reqHandler = require('./reqHandler');
 var app = express();
 var fs = require('fs');
 
+var userHandler = require("./userHandler");
+
 var version = "0.0.0.3";
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -28,6 +30,10 @@ app.post('/newUser', function (req, res) {
         console.log("app newUser ",err);
         res.status(502).send("error");
     }
+});
+
+app.post('/clear', function (req, res) {
+    userHandler.clearNotActiveUsers();
 });
 
 
@@ -68,6 +74,15 @@ app.post('/playerBoostClick', function(req,res){
         reqHandler.boostPlayer(req,res);
     }catch (err){
         console.log("error","playerBoostClick");
+        res.status(502).send("error");
+    }
+});
+
+app.post('/changePlayerName', function(req,res){
+    try {
+        reqHandler.changePlayerName(req, res);
+    }catch (err) {
+        console.log("error","changePlayerName");
         res.status(502).send("error");
     }
 });

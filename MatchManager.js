@@ -40,15 +40,29 @@ var calcResult  = function  calcResult(i_HomeTeam, i_AwayTeam) {
     }
 
     Promise.all(results).then(function(data){
-        var sum = (data[0] > data[1]? data[0] + 2*data[1] : 2*data[0] + data[1])
-        homeTeamOdds = data[0]/sum;
-        awayTeamOdds = data[1]/sum;
+        var sum = 0;
+        //var sum = (data[0] > data[1]? data[0] + 2*data[1] : 2*data[0] + data[1]);
+        if(data[0] > data[1]){
+            sum = data[0] + 2*data[1] + (data[0] - data[1]);
+            homeTeamOdds = ((data[0] - data[1])+ data[0])/sum;
+            awayTeamOdds = data[1]/sum;
+        }else{
+            sum = 2*data[0] + data[1] + (data[1] - data[0]);
+            homeTeamOdds = data[0]/sum;
+            awayTeamOdds = ((data[1] - data[0])+ data[1])/sum;
+        }
+        //homeTeamOdds = data[0]/sum;
+        //awayTeamOdds = data[1]/sum;
 
-        var outcome = randomIntFromInterval(1, 1000) / 1000;
+        var outcome = randomIntFromInterval(1, 10000) / 10000;
         var homeTeamGoals;
         var awayTeamGoals;
         var eHomeResult;
         var eAwayResult;
+
+        //console.log("homeTeamOdds, rating "+data[0]+ " odds " + homeTeamOdds+" win? "+(outcome < homeTeamOdds));
+        //console.log("awayTeamOdds, rating "+data[1]+ " odds " + (homeTeamOdds + awayTeamOdds)+" win? "+(outcome < (homeTeamOdds + awayTeamOdds)));
+        //console.log("outcome "+ outcome);
 
         if (outcome < homeTeamOdds) {
             // Home team win

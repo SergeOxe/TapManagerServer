@@ -148,6 +148,28 @@ var addNewNumTeam = function addNewNumTeam(num){
     return defer.promise;
 }
 
+var resetTeam = function resetTeam(id){
+    var defer = Promise.defer();
+    var obj = {};
+    obj["shop.fansLevel"] = 0;
+    obj["shop.facilitiesLevel"] = 0;
+    obj["shop.stadiumLevel"] = 0;
+    obj["isBot"] = true;
+    obj["isDefaultName"] = true;
+    obj["logo"] = randomIntFromInterval(0,29);
+    obj["id"] = -1;
+    updateTeamMulti({id:id},obj).then(function (data){
+        if (err) {
+            console.log("resetTeam", err);
+            defer.resolve("null");
+        } else {
+            //console.log("addNewTeam", data);
+            defer.resolve("ok");
+        }
+    });
+    return defer.promise;
+}
+
 var getBotTeam = function getBotTeam (){
     var defer = Promise.defer();
     teamsCollection.findOne({isBot:true},function(err,data){
@@ -359,10 +381,12 @@ var getSortedTeamsByPoints = function getSortedTeamsByPoints (leagueNum){
     });
     return defer.promise;
 }
+
 var deleteDB = function deleteDB(){
     teamsCollection.remove({},function(err,data){
     });
 }
+
 
 module.exports.deleteDB = deleteDB;
 module.exports.getSortedTeamsByPoints = getSortedTeamsByPoints;
@@ -379,3 +403,5 @@ module.exports.getTeamByKey = getTeamByKey;
 module.exports.getTeamsInLeague = getTeamsInLeague;
 module.exports.changeBotTeamName = changeBotTeamName;
 module.exports.setup = setup;
+
+module.exports.resetTeam = resetTeam;

@@ -22,8 +22,8 @@ var addNewBucket = function addNewBucket (user,res){
     //console.log(body);
     //var user = JSON.parse(body);
     var bucket = {
-        "valueForSecond": (11000)/(HOURS*60*60),
-        "maxAmount": 11000,
+        "valueForSecond": (1000000)/(HOURS*60*60),
+        "maxAmount": 1000000,
         "lastFlush": Date.now(),
         "level": 0,
         "id":user.id};
@@ -44,6 +44,15 @@ var addNewBucket = function addNewBucket (user,res){
         }
     })
     return defer.promise;
+}
+
+var deleteBucket = function deleteBucket(id){
+    bucketCollection.remove({id:id},function(err,data){
+        if(!data){
+            console.log("deleteBucket err",err);
+        }else{
+            //console.log("deleteBucket","ok");
+        }});
 }
 
 var getBucketById = function getBucketById (id){
@@ -120,3 +129,5 @@ module.exports.updateBucket = updateBucket;
 module.exports.addNewBucket = addNewBucket;
 module.exports.getBucketById = getBucketById;
 module.exports.setup = setup;
+
+module.exports.deleteBucket = deleteBucket;

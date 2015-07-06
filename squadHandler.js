@@ -340,7 +340,7 @@ function boostPlayer(id,indexPlayer){
     results.push(getSquadById(id));
     results.push(teamHandler.getTeamById(id));
     Promise.all(results).then(function(data){
-        var team = data[1];
+        var team = data[1].team;
         var player = data[0].players[indexPlayer];
         var nextBoost = player.nextBoost;
         var playerBoost = 10 * (team.shop.facilitiesLevel + 1);
@@ -379,12 +379,13 @@ function boostPlayer(id,indexPlayer){
 }
 
 var boostPlayerLevelUp = function boostPlayerLevelUp(id,indexPlayer) {
+    console.log(id,indexPlayer);
     var defer = Promise.defer();
     var results = [];
     results.push(getSquadById(id));
     results.push(teamHandler.getTeamById(id));
     Promise.all(results).then(function(data){
-        var team = data[1];
+        var team = data[1].team;
         var player = data[0].players[indexPlayer];
         var nextBoost = player.nextBoost;
         var obj = {};

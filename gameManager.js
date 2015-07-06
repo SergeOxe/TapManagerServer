@@ -296,7 +296,7 @@ var executeNextFixture = function  executeNextFixture(res){
     }
     var leagues = [];
     leagues.push([]);
-    console.log(numOfLeagues);
+    //console.log(numOfLeagues);
     for (var  i = 1; i <= numOfLeagues ; i++){
         leagues.push(teamsHandler.getSortedTeams(i));
     };

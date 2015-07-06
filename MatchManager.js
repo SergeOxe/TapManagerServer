@@ -224,7 +224,7 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         var incomeFromMerchandise = (GetFanBase(team) * (randomIntFromInterval(0, 8) / 10) *gameManager.getMerchandisePrice());
         var facilitiesCost = (team.shop.facilitiesLevel + 1) * gameManager.getFacilitiesFinanceMultiplier();
         var stadiumCost = i_isHomeMatch? (team.shop.stadiumLevel + 1) * gameManager.getStadiumFinanceMultiplier() : 0;
-       squadHandler.getAllSquadSalaryById(team.id).then(function(salary){
+        squadHandler.getAllSquadSalaryById(team.id).then(function(salary){
            updateValue["finance.incomeFromTickets"] = incomeFromTickets;
            updateValue["finance.incomeFromMerchandise"] = incomeFromMerchandise;
            updateValue["finance.facilitiesCost"] = facilitiesCost;

@@ -78,11 +78,11 @@ app.post('/playerBoostClick', function(req,res){
     }
 });
 
-app.post('/boostPlayerLevelUp', function(req,res){
+app.post('/boostPlayerLevelUp', function(req, res){
     try{
         reqHandler.boostPlayerLevelUp(req,res);
     }catch (err){
-        console.log("error","playerBoostClick");
+        console.log("error",err);
         res.status(502).send("error");
     }
 });

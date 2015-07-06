@@ -4,10 +4,11 @@
 var Promise = require('bluebird');
 var gameManager = require("./gameManager");
 var teamsHandler = require("./teamsHandler");
+var reqHandler = require("./reqHandler");
 var userCollection;
 
-var monthInMilliSeconds = 2628000000;
-//var monthInMilliSeconds = 1000;
+//var monthInMilliSeconds = 2628000000;
+var monthInMilliSeconds = 1000;
 
 
 var setup = function setup(db){
@@ -57,10 +58,9 @@ var addNewUser = function addNewUser (body){
             connectWithFB:withFB,
             name:body.name,
             currentLeague:0,
-            coinValue: 200,
+            coinValue: 0,
             money:1000000,
             lastLogin : Date.now(),
-            isMessage: true,
             message: message
             }
     userCollection.insert(obj,function(err,data){
@@ -166,11 +166,9 @@ var addMessageToUser = function addMessageToUser (id,messageArray){
             console.log("addMessageToUser",err);
             defer.resolve("null");
         }else{
-            updateUser(id,"isMessage",true).then(function(data){
-                defer.resolve(data);
-            });
-            //console.log("addMessageToUser","ok");
+            defer.resolve("ok");
         }});
+        //console.log("addMessageToUser","ok");
     return defer.promise;
 }
 
@@ -244,6 +242,8 @@ var upgradeItem = function upgradeItem(id,item) {
     return defer.promise;
 }
 
+
+//No Coin
 var addCoinMoney = function addCoinMoney(id,clicks){
     var defer = Promise.defer();
     getUserById(id).then(function(data){
@@ -267,7 +267,7 @@ var clearNotActiveUsers = function clearNotActiveUsers(){
         if(!err){
             results.forEach(function(user){
                 if((date - user.lastLogin) > monthInMilliSeconds){
-                    deleteUser(user.id)
+                    reqHandler.deleteUser(user.id)
                 }
             });
         }

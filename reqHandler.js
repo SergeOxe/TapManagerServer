@@ -148,7 +148,6 @@ var getInfoById = function getInfoById(id){
         teamsHandler.getTeamsInLeague(data[1].team.league).then(function (leagueData){
             json["league"] = leagueData;
             var obj = {};
-            obj["isMessage"] = false;
             obj["message"] = [];
             userHandler.updateMultiValueToUser(id,obj);
             defer.resolve(json)
@@ -185,6 +184,7 @@ var connectWithFB = function connectWithFB(id,FBid){
     return defer.promise;
 }
 
+//Resets Team
 var deleteUser = function deleteUser(id){
     userHandler.deleteUser(id);
     bucketHandler.deleteBucket(id);
@@ -237,7 +237,7 @@ var boostPlayer = function boostPlayer(req,res){
     });
 }
 
-var boostPlayerLevelUp = function boostPlayerLevelUp(){
+var boostPlayerLevelUp = function boostPlayerLevelUp(req,res){
     squadHandler.boostPlayerLevelUp(req.body.id,req.body.playerId).then(function(data){
         res.send(data);
     });

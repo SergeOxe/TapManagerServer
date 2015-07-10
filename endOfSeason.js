@@ -32,7 +32,7 @@ var endOfSeason = function endOfSeason(){
         for(var j = 0 ; j < numOfLeagues ; j++){
             var teams = leaguesTeams[j];
             var upMessage = {"header": "End of season", "content":"Congratulations you made it to the next league!"};
-            var downMessage = {"header":"End of season" , "content":"Better luck next time!"};
+            var downMessage = {"header":"End of season" , "content":"You have relegated"};
             results.push(giveBonusToTeams(teams, (j+1)));
             for (var i = 0 ; i< 20 ; i++){
                 results.push(initSeasonStatistics(teams[i]));
@@ -93,11 +93,12 @@ var endOfSeason = function endOfSeason(){
 function giveBonusToTeams(sortedTeamsLeague, leagueNum){
     var defer = Promise.defer();
     var results = [];
-    var message ={"header":"Bonus","content": "You got bonus of "};
+    //var message ={"header":"Bonus","content": "You got bonus of "};
     for (var i = 0 ; i < 20 ; i++){
         if(sortedTeamsLeague[i].id != -1) {
+            var message ={"header":"End of season","content":""};
             console.log("giveBonusToTeams","Team "+ i+" in league num "+leagueNum+" got ",(20 - i) * 10000 * leagueNum );
-            message.content +=""+ ((20 - i) * 10000 * leagueNum) + " coins ";
+            message.content +="You finish in the "+(i+1)+" position and got a bonus of "+ ((20 - i) * 10000 * leagueNum) + " coins!";
             results.push(userHandler.addMoneyToUser(sortedTeamsLeague[i].id, (20 - i) * 100000 * leagueNum));
             results.push(userHandler.addMessageToUser(sortedTeamsLeague[i].id,message));
         }

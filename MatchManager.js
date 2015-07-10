@@ -117,6 +117,7 @@ function  MatchInfo(i_HomeTeam, i_AwayTeam, i_HomeTeamGoals, i_AwayTeamGoals,  i
 function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
     //console.log(team,i_result,  i_matchInfo,  i_isHomeMatch);
     var defer = Promise.defer();
+    var promiseArray = [];
     var id = {};
     id["_id"] = team._id;
     var updateValue = {};
@@ -239,10 +240,12 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
            });
        });
     }else{
-        teamsHandler.addValueToTeamMulti(id,addValue);
-        teamsHandler.updateTeamMulti(id,updateValue);
-        checkRecords (id).then(function(data){
-            defer.resolve("ok");
+        promiseArray.push(teamsHandler.addValueToTeamMulti(id,addValue));
+        promiseArray.push(teamsHandler.updateTeamMulti(id,updateValue));
+        Promise.all(promiseArray).then(function (data1) {
+            checkRecords(id).then(function (data) {
+                defer.resolve("ok");
+            });
         });
     }
     return defer.promise;
@@ -250,24 +253,28 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
 
 function checkRecords(id){
     var defer = Promise.defer();
+    if(id == -1){
+        return defer.resolve("ok");
+    }
     teamsHandler.getTeamByKey(id).then(function (data){
        if(data.team == "null"){
            console.log("checkRecords err", "null");
        }else {
            var team = data.team;
            var updateValue = {};
+           //console.log(team.statistics.currentLoseStreak, team.statistics.longestLoseStreak);
            if (team.statistics.currentLoseStreak > team.statistics.longestLoseStreak) {
                updateValue["statistics.longestLoseStreak"] = team.statistics.currentLoseStreak;
            }
-
+            //console.log(team.statistics.currentUndefeatedStreak , team.statistics.longestUndefeatedStreak);
            if (team.statistics.currentUndefeatedStreak > team.statistics.longestUndefeatedStreak) {
                updateValue["statistics.longestUndefeatedStreak"] = team.statistics.currentUndefeatedStreak;
            }
-
+           //console.log(team.statistics.currentWinlessStreak , team.statistics.longestWinlessStreak);
            if (team.statistics.currentWinlessStreak > team.statistics.longestWinlessStreak) {
                updateValue["statistics.longestWinlessStreak"] = team.statistics.currentWinlessStreak;
            }
-
+            //console.log(team.statistics.currentWinStreak , team.statistics.longestWinStreak);
            if (team.statistics.currentWinStreak > team.statistics.longestWinStreak) {
                updateValue["statistics.longestWinStreak"] = team.statistics.currentWinStreak;
            }

@@ -159,7 +159,7 @@ var resetTeam = function resetTeam(id){
     obj["isDefaultName"] = true;
     obj["logo"] = randomIntFromInterval(0,29);
     obj["id"] = -1;
-    obj["totalInstantTrain"] = 0;
+    obj["totalInstantTrain"] = 1;
     updateTeamMulti({id:id},obj).then(function (data){
         if (err) {
             console.log("resetTeam", err);
@@ -301,6 +301,26 @@ var newTeamUser = function newTeamUser(detailsJson){
         obj["totalInstantTrain"] = 1;
         obj["lastGameInfo.homeTeam"] = detailsJson.teamName;
         obj["lastGameInfo.awayTeam"] = detailsJson.teamName +" U18";
+
+        obj["gamesHistory.allTime.wins"] = 0;
+        obj["gamesHistory.allTime.losts"] = 0;
+        obj["gamesHistory.allTime.draws"] = 0;
+        obj["gamesHistory.allTime.goalsFor"] = 0;
+        obj["gamesHistory.allTime.goalsAgainst"] = 0;
+        obj["gamesHistory.allTime.homeGames"] = 0;
+        obj["gamesHistory.allTime.crowd"] = 0;
+
+        obj["statistics.longestWinStreak"] = 0;
+        obj["statistics.longestLoseStreak"] = 0;
+        obj["statistics.longestWinlessStreak"] = 0;
+        obj["statistics.longestUndefeatedStreak"] = 0;
+        obj["statistics.biggestWinRecord"] = 0;
+        obj["statistics.biggestLoseRecord"] = 0;
+        obj["statistics.currentWinStreak"] = 0;
+        obj["statistics.currentLoseStreak"] = 0;
+        obj["statistics.currentWinlessStreak"] = 0;
+        obj["statistics.currentUndefeatedStreak"] = 0;
+
         teamsCollection.update({"_id":id},{$set: obj},function(err,data){
             if(!data){
                 console.log("newTeamUser err",err);

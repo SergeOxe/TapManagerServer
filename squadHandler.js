@@ -350,7 +350,9 @@ function boostPlayer(id,indexPlayer){
         find["id"] = id;
         if(playerBoost + player.currentBoost >= player.nextBoost){
             obj["players."+indexPlayer +".currentBoost"] =  (playerBoost + player.currentBoost)%player.nextBoost;
-            obj["players."+indexPlayer +".nextBoost"] = player.nextBoost * 2;
+            if(player.level < 24) {
+                obj["players." + indexPlayer + ".nextBoost"] = player.nextBoost * 2;
+            }
             //obj["players."+indexPlayer +".priceToBoost"] = player.priceToBoost * gameManager.getMultiplierBoost();
             //obj["players."+indexPlayer +".boost"] = playerBoost;
             obj["players."+indexPlayer +".level"] = player.level + 1;
@@ -358,7 +360,7 @@ function boostPlayer(id,indexPlayer){
             //obj["players."+indexPlayer +".price"] = player.price *1.25;
             var message = {
                 "header":"Level up",
-                "content":player.firstName + " "+player.lastName+" is level "+ (player.level + 1) + " now"
+                "content":player.firstName + " "+player.lastName+" is level "+ (player.level + 1) + " now."
             };
 
             userHandler.addMessageToUser(id,message);
@@ -393,8 +395,10 @@ var boostPlayerLevelUp = function boostPlayerLevelUp(id,indexPlayer) {
         if(team.totalInstantTrain > 0) {
             var instantTrain = {};
             instantTrain["totalInstantTrain"] = -1;
-            obj["players." + indexPlayer + ".nextBoost"] = player.nextBoost * 1.5;
-            obj["players." + indexPlayer + ".priceToBoost"] = player.priceToBoost * gameManager.getMultiplierBoost();
+            if(player.level < 24) {
+                obj["players." + indexPlayer + ".nextBoost"] = player.nextBoost * 2;
+            }
+            //obj["players." + indexPlayer + ".priceToBoost"] = player.priceToBoost * gameManager.getMultiplierBoost();
             obj["players." + indexPlayer + ".level"] = player.level + 1;
             var message = {
                 "header": "Level up",

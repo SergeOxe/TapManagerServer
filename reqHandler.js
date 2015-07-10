@@ -112,7 +112,6 @@ var changeTeamName = function changeTeamName(req,res){
  var newUser = function newUser(details,res){
      var results = [];
      var json = JSON.stringify(details);
-     console.log(json);
 
      userHandler.loginUser(json,res).then(function(data){
          if(data == "null") {

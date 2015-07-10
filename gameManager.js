@@ -350,7 +350,7 @@ function  GetOpponentByTeamAndFixture( indexAndLeague,  i_Fixture){
 
 function  GetOpponentByTeam( i_Team) {
     var defer = Promise.defer();
-    console.log("GetOpponentByTeam");
+    //console.log("GetOpponentByTeam");
     GetOpponentByTeamAndFixture(i_Team,m_currentFixture).then(function(data){
         defer.resolve(data);
     });

@@ -264,7 +264,7 @@ var addNewBotSquad =  function addNewBotSquad(id){
             "isPlaying": true,
             "yearJoinedTheClub": 0,
             "playerImage": 0
-        }
+        };
 
         if (i == 0 || i == 11) {
             player.position = 0;
@@ -379,7 +379,6 @@ function boostPlayer(id,indexPlayer){
 }
 
 var boostPlayerLevelUp = function boostPlayerLevelUp(id,indexPlayer) {
-    console.log(id,indexPlayer);
     var defer = Promise.defer();
     var results = [];
     results.push(getSquadById(id));

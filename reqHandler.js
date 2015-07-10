@@ -100,7 +100,13 @@ var getBotSquad = function getBotSquad(req,res){
 
 var changeBotTeamName = function changeBotTeamName(req,res){
     teamsHandler.changeBotTeamName(req.name).then(function(data){
-        res.send(data.team);
+        res.send(data);
+    });
+}
+
+var changeTeamName = function changeTeamName(req,res){
+    teamsHandler.changeTeamName(req.id,req.name).then(function(data){
+        res.send(data);
     });
 }
  var newUser = function newUser(details,res){
@@ -244,7 +250,7 @@ var boostPlayerLevelUp = function boostPlayerLevelUp(req,res){
 };
 
 var changePlayerName = function changePlayerName(req,res){
-    squadHandler.changePlayerName(req.body.id,req.body.playerDetails).then(function(data){
+    squadHandler.changePlayerName(req.body.id,req.body).then(function(data){
         res.send(data);
     });
 }
@@ -304,3 +310,5 @@ module.exports.changePlayerName = changePlayerName;
 module.exports.boostPlayerLevelUp = boostPlayerLevelUp;
 
 module.exports.messageWasRead = messageWasRead;
+
+module.exports.changeTeamName = changeTeamName;

@@ -472,7 +472,8 @@ var addBoostToAllPlayers = function addBoostToAllPlayers(id) {
 var changePlayerName = function changePlayerName(id,playerDetails) {
     var defer = Promise.defer();
     getSquadById(id).then(function(data){
-        var player = data[0].players[playerDetails.indexPlayer];
+        var indexPlayer = playerDetails.indexPlayer;
+        var player = data.players[playerDetails.indexPlayer];
         var obj = {};
         var find = {};
         find["id"] = id;

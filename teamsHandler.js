@@ -4,6 +4,7 @@
 var Promise = require('bluebird');
 var squadHandler = require('./squadHandler');
 var gameManager = require('./gameManager');
+var userHandler = require('./userHandler');
 //var reqHandler = require('./reqHandler');
 var teamsCollection;
 
@@ -66,7 +67,6 @@ function randomIntFromInterval(min,max) {
 }
 var addNewNumTeam = function addNewNumTeam(num){
     var defer = Promise.defer();
-    //console.log(body);
     var leagueNum = gameManager.getNumOfLeagues() + 1;
     var obj = {};
     obj["numOfLeagues"] = 1;
@@ -204,6 +204,31 @@ var changeBotTeamName = function changeBotTeamName (name){
     return defer.promise;
 }
 
+var changeTeamName = function changeTeamName (id,name){
+    var defer = Promise.defer();
+    teamsCollection.findOne({id:id},function(err,data){
+        if(!data){
+            console.log("changeTeamName err",err);
+            defer.resolve("null");
+        }else{
+            var obj = {};
+            obj["teamName"] = name;
+            obj["isDefaultName"] = false;
+            updateTeamMulti({id:id},obj).then(function(data){
+                var message = {
+                    "header":"Team name was changed",
+                    "content":"Your team name is "+ name+" now."
+                };
+
+                userHandler.addMessageToUser(id,message);
+                defer.resolve("ok");
+            });
+            //console.log("getBotTeam","ok");
+
+        }});
+    return defer.promise;
+}
+
 var updateTeam = function updateTeam (findBy,Key,value){
     var defer = Promise.defer();
     //console.log(body);
@@ -273,6 +298,7 @@ var newTeamUser = function newTeamUser(detailsJson){
         obj["teamName"] = detailsJson.teamName;
         obj["coachName"] = detailsJson.name;
         obj["isBot"] = false;
+        obj["totalInstantTrain"] = 1;
         obj["lastGameInfo.homeTeam"] = detailsJson.teamName;
         obj["lastGameInfo.awayTeam"] = detailsJson.teamName +" U18";
         teamsCollection.update({"_id":id},{$set: obj},function(err,data){
@@ -407,3 +433,5 @@ module.exports.changeBotTeamName = changeBotTeamName;
 module.exports.setup = setup;
 
 module.exports.resetTeam = resetTeam;
+
+module.exports.changeTeamName = changeTeamName;

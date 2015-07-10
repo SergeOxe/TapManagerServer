@@ -69,6 +69,10 @@ app.post('/changeBotTeamName', function (req, res) {
     reqHandler.changeBotTeamName(req.body,res);
 });
 
+app.post('/changeTeamName', function (req, res) {
+    reqHandler.changeTeamName(req.body,res);
+});
+
 app.post('/playerBoostClick', function(req,res){
     try{
         reqHandler.boostPlayer(req,res);

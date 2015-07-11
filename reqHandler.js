@@ -31,7 +31,7 @@ MongoClient.connect("mongodb://localhost:27017", function(err, data) {
 var gameManagerSetup = function gameManagerSetup(){
     gameManager.setup(db);
 }
-
+/*
 var deleteDB = function deleteDB(){
     var defer = Promise.defer();
     var results = [];
@@ -50,6 +50,7 @@ var deleteDB = function deleteDB(){
     });
     return defer.promise;
 }
+*/
 
 var loginUser = function loginUser (user,res){
     userHandler.loginUser(user).then(function(data){
@@ -109,6 +110,15 @@ var changeTeamName = function changeTeamName(req,res){
         res.send(data);
     });
 }
+
+var addInstantTrain = function addInstantTrain(req,res){
+    var obj = {};
+    obj["totalInstantTrain"] = parseInt(req.amount);
+    teamsHandler.addValueToTeamMulti({id:req.id},obj).then(function(data){
+        res.send(data);
+    });
+}
+
  var newUser = function newUser(details,res){
      var results = [];
      var json = JSON.stringify(details);
@@ -162,7 +172,7 @@ var getInfoById = function getInfoById(id){
     })
     return defer.promise;
 }
-
+/*
 var messageWasRead = function messageWasRead(id,res){
     var obj = {};
     obj["isMessage"] = false;
@@ -170,7 +180,7 @@ var messageWasRead = function messageWasRead(id,res){
     userHandler.updateMultiValueToUser(id,obj);
     res.send("ok");
 }
-
+*/
 var connectWithFB = function connectWithFB(id,FBid){
     var defer = Promise.defer();
     var results = [];
@@ -311,3 +321,5 @@ module.exports.boostPlayerLevelUp = boostPlayerLevelUp;
 module.exports.messageWasRead = messageWasRead;
 
 module.exports.changeTeamName = changeTeamName;
+
+module.exports.addInstantTrain = addInstantTrain;

@@ -97,7 +97,7 @@ function giveBonusToTeams(sortedTeamsLeague, leagueNum){
     for (var i = 0 ; i < 20 ; i++){
         if(sortedTeamsLeague[i].id != -1) {
             var message ={"header":"End of season","content":""};
-            console.log("giveBonusToTeams","Team "+ i+" in league num "+leagueNum+" got ",(20 - i) * 10000 * leagueNum );
+            //console.log("giveBonusToTeams","Team "+ i+" in league num "+leagueNum+" got ",(20 - i) * 10000 * leagueNum );
             message.content +="You finish in the "+(i+1)+" position and got a bonus of "+ ((20 - i) * 10000 * leagueNum) + " coins!";
             results.push(userHandler.addMoneyToUser(sortedTeamsLeague[i].id, (20 - i) * 100000 * leagueNum));
             results.push(userHandler.addMessageToUser(sortedTeamsLeague[i].id,message));

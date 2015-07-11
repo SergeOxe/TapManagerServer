@@ -36,12 +36,13 @@ app.post('/clear', function (req, res) {
     userHandler.clearNotActiveUsers();
 });
 
-
+/*
 app.get('/delete', function (req, res) {
     reqHandler.deleteDB().then(function(data){
         res.send(data);
     });
 });
+*/
 
 app.post('/collectBucket', function (req, res) {
     try {
@@ -138,6 +139,7 @@ app.post('/getInfoById', function (req, res) {
     }
 });
 
+/*
 app.post('/messageWasRead', function (req, res) {
     try {
         reqHandler.messageWasRead(req.body.id, res);
@@ -147,6 +149,7 @@ app.post('/messageWasRead', function (req, res) {
     }
 });
 
+
 app.post('/getTeamsInLeague', function (req, res) {
     try {
         reqHandler.getTeamsInLeague(req.body.league, res);
@@ -155,17 +158,17 @@ app.post('/getTeamsInLeague', function (req, res) {
         res.status(502).send("error");
     }
 });
+*/
 
-app.post('/coinClick',function(req,res){
+app.post('/addInstantTrain',function(req,res){
     try {
-        reqHandler.addCoinMoney(req, res);
+        reqHandler.addInstantTrain(req.body, res);
     }catch (err){
         console.log("error","coinClick");
         res.status(502).send("error");
     }
 });
 
-//--------------------------------------------
 app.post('/addMoney' ,function(req, res) {
     reqHandler.addMoneyToUser(req,res);
 });
@@ -174,6 +177,7 @@ app.get('/getTimeTillNextMatch', function (req, res) {
     reqHandler.getTimeTillNextMatch(res);
 });
 
+//------------------------------------------------
 app.get('/executeNextFixture', function (req, res) {
     reqHandler.executeNextFixture(req,res);
 });

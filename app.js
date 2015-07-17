@@ -198,7 +198,7 @@ app.get('/', function(request, response) {
 //app.set('port', (process.env.PORT || 5000));
 
 //var server = app.listen(app.get('port'), function () {
-var server = app.listen(3000, function () {
+var server = app.listen(4000, function () {
     var host = server.address().address;
     var port = server.address().port;
     console.log('Listening at http://%s:%s', host, port);

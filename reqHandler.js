@@ -158,6 +158,7 @@ var getInfoById = function getInfoById(id){
         json["squad"] = data[4];
         json["settings"] = data[5].pricesAndMultipliers;
         json["timeTillNextMatch"] = data[6];
+        json["numOfLeagues"] = gameManager.getNumOfLeagues();
         json["nextMatch"] = data[7];
 
         teamsHandler.getTeamsInLeague(data[1].team.league).then(function (leagueData){
@@ -286,7 +287,7 @@ var collectBucket = function collectBucket(req,res){
     });
 }
 
-module.exports.deleteDB = deleteDB;
+//module.exports.deleteDB = deleteDB;
 module.exports.collectBucket = collectBucket;
 module.exports.addMoneyToUser = addMoneyToUser;
 module.exports.getTimeTillNextMatch = getTimeTillNextMatch;
@@ -318,7 +319,7 @@ module.exports.deleteUser = deleteUser;
 module.exports.changePlayerName = changePlayerName;
 module.exports.boostPlayerLevelUp = boostPlayerLevelUp;
 
-module.exports.messageWasRead = messageWasRead;
+//module.exports.messageWasRead = messageWasRead;
 
 module.exports.changeTeamName = changeTeamName;
 

@@ -333,11 +333,13 @@ function  GetOpponentByTeamAndFixture( indexAndLeague,  i_Fixture){
         var v_IsHomeTeam = true;
         for (var i = 0; i < getMatchesPerFixture(); i++){
             if (getTeamByFixtureAndMatch(i_Fixture, i, v_IsHomeTeam) == indexAndLeague.index) {
-                defer.resolve({opponent :sortedLeague[getTeamByFixtureAndMatch(i_Fixture, i, !v_IsHomeTeam)].teamName,
+                var teamH = sortedLeague[getTeamByFixtureAndMatch(i_Fixture, i, !v_IsHomeTeam)];
+                defer.resolve({opponent :teamH.teamName,logo:teamH.logo,
                         isHomeMatch:true});
             }
             if (getTeamByFixtureAndMatch(i_Fixture, i, !v_IsHomeTeam) == indexAndLeague.index) {
-                defer.resolve({opponent : sortedLeague[getTeamByFixtureAndMatch(i_Fixture, i, v_IsHomeTeam)].teamName,
+                var teamA  = sortedLeague[getTeamByFixtureAndMatch(i_Fixture, i, v_IsHomeTeam)];
+                defer.resolve({opponent : teamA.teamName,logo:teamA.logo,
                         isHomeMatch:false});
             }
         }

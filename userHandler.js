@@ -7,8 +7,8 @@ var teamsHandler = require("./teamsHandler");
 var reqHandler = require("./reqHandler");
 var userCollection;
 
-var monthInMilliSeconds = 2628000000;
-//var monthInMilliSeconds = 1000;
+//var monthInMilliSeconds = 2628000000;
+var monthInMilliSeconds = 1000;
 
 
 var setup = function setup(db){

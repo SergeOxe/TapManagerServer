@@ -129,7 +129,7 @@ var addNewNumTeam = function addNewNumTeam(num){
                 }
             },
             "isDefaultName" : true,
-            "logo": randomIntFromInterval(0,29),
+            "logo": randomIntFromInterval(0,15),
             "teamName": "team " + ((leagueNum - 1)*20 + i),
             "id": -1,
             "totalInstantTrain":0
@@ -157,11 +157,11 @@ var resetTeam = function resetTeam(id){
     obj["shop.stadiumLevel"] = 0;
     obj["isBot"] = true;
     obj["isDefaultName"] = true;
-    obj["logo"] = randomIntFromInterval(0,29);
+    obj["logo"] = randomIntFromInterval(0,15);
     obj["id"] = -1;
     obj["totalInstantTrain"] = 1;
     updateTeamMulti({id:id},obj).then(function (data){
-        if (err) {
+        if (!data) {
             console.log("resetTeam", err);
             defer.resolve("null");
         } else {
@@ -301,6 +301,7 @@ var newTeamUser = function newTeamUser(detailsJson){
         obj["totalInstantTrain"] = 1;
         obj["lastGameInfo.homeTeam"] = detailsJson.teamName;
         obj["lastGameInfo.awayTeam"] = detailsJson.teamName +" U18";
+        obj["logo"] = detailsJson.logo;
 
         obj["gamesHistory.allTime.wins"] = 0;
         obj["gamesHistory.allTime.losts"] = 0;
@@ -405,7 +406,7 @@ var getSortedTeams = function getSortedTeams (leagueNum){
     var defer = Promise.defer();
     teamsCollection.find({league: leagueNum}).sort({_id:1}).toArray(function(err,sortedTeams) {
         if (!sortedTeams) {
-            console.log("getSortedTeams err",err)
+            console.log("getSortedTeams err",err);
             defer.resolve("null");
         }else{
             //console.log("getSortedTeams","ok")
@@ -420,7 +421,7 @@ var getSortedTeamsByPoints = function getSortedTeamsByPoints (leagueNum){
     var defer = Promise.defer();
     teamsCollection.find({league: leagueNum}).sort({"gamesHistory.thisSeason.points": -1}, {"gamesHistory.thisSeason.goalsDifference" : -1}).toArray(function(err,sortedTeams) {
         if (!sortedTeams) {
-            console.log("getSortedTeamsByPoints err",err)
+            console.log("getSortedTeamsByPoints err",err);
             defer.resolve("null");
         }else{
             //console.log("getSortedTeamsByPoints","ok")

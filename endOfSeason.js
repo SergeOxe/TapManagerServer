@@ -42,6 +42,7 @@ var endOfSeason = function endOfSeason(){
                 obj["league"] = 1;
                 if(!teams[0].isBot){
                     userHandler.addMessageToUser(teams[0].id, upMessage);
+                    userHandler.addValueToUser(teams[0].id,{totalChampionships:1});
                     userHandler.addValueToUser(teams[0].id,{currentLeague:1});
                 }
                 if(!teams[1].isBot){
@@ -82,7 +83,7 @@ var endOfSeason = function endOfSeason(){
         }
     });
     Promise.all(results).then(function(data){
-        userHandler.clearNotActiveUsers();
+        //userHandler.clearNotActiveUsers();
         gameManager.initFixtures();
         reqHandler.gameManagerSetup();
         defer.resolve("ok");

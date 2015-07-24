@@ -9,8 +9,8 @@ var gameManager = require("./gameManager");
 var db;
 
 // Connect to the db
-//MongoClient.connect("mongodb://Serge:5958164se@ds063889.mongolab.com:63889/tapmanagerdb", function(err, data) {
-MongoClient.connect("mongodb://localhost:27017", function(err, data) {
+MongoClient.connect("mongodb://Serge:5958164se@ds063889.mongolab.com:63889/tapmanagerdb", function(err, data) {
+//MongoClient.connect("mongodb://localhost:27017", function(err, data) {
     if (!err) {
         console.log("We are connected");
     } else {
@@ -51,6 +51,10 @@ var deleteDB = function deleteDB(){
     return defer.promise;
 }
 */
+var sendMessage = function sendMessage(req,res){
+    userHandler.sendMessage(req.header,req.content);
+    res.send("ok");
+}
 
 var loginUser = function loginUser (user,res){
     userHandler.loginUser(user).then(function(data){
@@ -324,3 +328,5 @@ module.exports.boostPlayerLevelUp = boostPlayerLevelUp;
 module.exports.changeTeamName = changeTeamName;
 
 module.exports.addInstantTrain = addInstantTrain;
+
+module.exports.sendMessage = sendMessage;

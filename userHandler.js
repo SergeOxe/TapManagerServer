@@ -7,8 +7,8 @@ var teamsHandler = require("./teamsHandler");
 var reqHandler = require("./reqHandler");
 var userCollection;
 
-//var monthInMilliSeconds = 2628000000;
-var monthInMilliSeconds = 1000;
+var monthInMilliSeconds = 2628000000;
+//var monthInMilliSeconds = 1000;
 
 
 var setup = function setup(db){
@@ -47,7 +47,7 @@ var addNewUser = function addNewUser (body){
     var defer = Promise.defer();
     var message = [];
     var withFB = false;
-    message.push({header:"Welcome To Tap Manager","content":" You got 1000000"});
+    message.push({header:"Welcome To Tap Manager","content":"The plan is simple, win the Championship!"});
 
     if (!isNaN(body.id)){
         withFB = true;
@@ -59,7 +59,7 @@ var addNewUser = function addNewUser (body){
             name:body.name,
             currentLeague:0,
             coinValue: 0,
-            money:1000000,
+            money:500000,
             lastLogin : Date.now(),
             message: message
             }
@@ -274,6 +274,19 @@ var clearNotActiveUsers = function clearNotActiveUsers(){
     });
 };
 
+var sendMessage = function sendMessage (i_header,i_content){
+    var message = {};
+    message["header"] = i_header;
+    message["content"] = i_content;
+    userCollection.find({},{id:1}).toArray(function(err, results){
+        if(!err) {
+            results.forEach(function (user) {
+                addMessageToUser(user.id, message);
+            });
+        }
+    });
+}
+
 var deleteDB = function deleteDB(){
     userCollection.remove({},function(err,data){
     });
@@ -295,3 +308,5 @@ module.exports.updateMultiValueToUser = updateMultiValueToUser;
 
 module.exports.deleteUser = deleteUser;
 module.exports.clearNotActiveUsers = clearNotActiveUsers;
+
+module.exports.sendMessage = sendMessage;

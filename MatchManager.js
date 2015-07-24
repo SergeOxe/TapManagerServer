@@ -128,11 +128,12 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         addValue["gamesHistory.thisSeason.wins"] = 1;
         addValue["gamesHistory.allTime.wins"] = 1;
         addValue["statistics.currentWinStreak"] = 1;
-        addValue["statistics.currentUndefeatedStreak"] =1 ;
-        addValue["additionalFans"] = 25;
+        addValue["statistics.currentUndefeatedStreak"] =1;
+
+        updateValue["additionalFans"] = randomIntFromInterval(10,150);
 
         addValue["totalInstantTrain"] = 2;
-        instantTrain = 2;
+        instantTrain = 1;
 
         updateValue["lastResult"]= 0;
         updateValue["statistics.currentLoseStreak"] = 0;
@@ -147,8 +148,9 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         addValue["totalInstantTrain"] = 0;
         instantTrain = 0;
 
-        if (team.gamesHistory.thisSeason.crowd - 10 > 0) {
-            addValue["additionalFans"] = -10;
+        var fansLeft = randomIntFromInterval(-50,0);
+        if (team.gamesHistory.thisSeason.crowd - fansLeft > 0) {
+            updateValue["additionalFans"] = fansLeft;
         }else {
             updateValue["gamesHistory.thisSeason.crowd"] = 0;
         }
@@ -163,11 +165,12 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         addValue["gamesHistory.allTime.draws"] = 1;
         addValue["statistics.currentUndefeatedStreak"] = 1;
         addValue["statistics.currentWinlessStreak"] = 1;
-        addValue["additionalFans"] = 13;
+
 
         addValue["totalInstantTrain"] = 1;
-        instantTrain = 1;;
+        instantTrain = 0;
 
+        updateValue["additionalFans"] =  randomIntFromInterval(5,80);
         updateValue["lastResult"]= 2;
         updateValue["statistics.currentWinStreak"] = 0;
         updateValue["statistics.currentLoseStreak"] = 0;
@@ -222,7 +225,7 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         //Expenses
         var ticketPrice = (team.shop.stadiumLevel + 1) * gameManager.getTicketPrice();
         var incomeFromTickets = crowdAtMatch * ticketPrice;
-        var incomeFromMerchandise = (GetFanBase(team) * (randomIntFromInterval(0, 8) / 10) *gameManager.getMerchandisePrice());
+        var incomeFromMerchandise = (GetFanBase(team) * (randomIntFromInterval(1, 8) / 10) *gameManager.getMerchandisePrice());
         var facilitiesCost = (team.shop.facilitiesLevel + 1) * gameManager.getFacilitiesFinanceMultiplier();
         var stadiumCost = i_isHomeMatch? (team.shop.stadiumLevel + 1) * gameManager.getStadiumFinanceMultiplier() : 0;
         squadHandler.getAllSquadSalaryById(team.id).then(function(salary){
@@ -280,9 +283,8 @@ function checkRecords(id){
            }
 
            teamsHandler.updateTeamMulti(id, updateValue);
-
+           defer.resolve("ok");
        }
-        defer.resolve("ok");
     });
     return defer.promise;
 }

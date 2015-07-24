@@ -4,6 +4,7 @@
 var teamsHandler = require("./teamsHandler");
 var matchManager = require("./matchManager");
 var endOfSeason = require("./endOfSeason");
+var userHandler = require("./userHandler");
 var Promise = require('bluebird');
 
 var m_currentFixture;
@@ -26,6 +27,7 @@ var merchandisePrice;
 var lastGame;
 var timeIntervalInHours;
 var numOfLeagues;
+var MAX_USERS = 1000;
 
 var setup = function setup(db){
     var defer = Promise.defer();
@@ -101,6 +103,7 @@ function executeGames() {
         lastGame = Date.now();
         console.log("next Game In "+ getTimeTillNextMatch());
         updateGamesCollection({},{lastGame:lastGame});
+        addUsers();
         setTimeout(executeGames, timeIntervalInHours * 3600000);
     }
 }
@@ -305,12 +308,16 @@ var executeNextFixture = function  executeNextFixture(res){
         for (var j = 1; j <= numOfLeagues; j++) {
             var sortedTeamsLeague = sortedTeams[j];
             //console.log(sortedTeamsLeague);
-            for (var i = 0; i < getMatchesPerFixture(); i++) {
-                var team1 = getTeamByFixtureAndMatch(m_currentFixture, i, v_IsHomeTeam);
-                var team2 = getTeamByFixtureAndMatch(m_currentFixture, i, !v_IsHomeTeam);
-                var teamObj1 = sortedTeamsLeague[team1];
-                var teamObj2 = sortedTeamsLeague[team2];
-                matchManager.calcResult(teamObj1, teamObj2);
+            if(sortedTeamsLeague) {
+                for (var i = 0; i < getMatchesPerFixture(); i++) {
+                    var team1 = getTeamByFixtureAndMatch(m_currentFixture, i, v_IsHomeTeam);
+                    var team2 = getTeamByFixtureAndMatch(m_currentFixture, i, !v_IsHomeTeam);
+                    var teamObj1 = sortedTeamsLeague[team1];
+                    var teamObj2 = sortedTeamsLeague[team2];
+                    matchManager.calcResult(teamObj1, teamObj2);
+                }
+            }else {
+                console.log("executeNextFixture err sortedTeamsLeague",sortedTeamsLeague);
             }
         }
         var curr = {};
@@ -320,10 +327,6 @@ var executeNextFixture = function  executeNextFixture(res){
         lastGame = Date.now();
         console.log("executeNextFixture",m_currentFixture,"ok");
     });
-
-//if (!res) {
-    //res.send("ok");
-//}
 }
 
 function  GetOpponentByTeamAndFixture( indexAndLeague,  i_Fixture){
@@ -359,6 +362,20 @@ function  GetOpponentByTeam( i_Team) {
     return defer.promise;
 }
 
+function addUsers(){
+    gameManagerCollection.findOne({}, function (err, data) {
+        if (data) {
+            var users = data.users;
+            if (((numOfLeagues * 20 ) - users) < 20) {
+                teamsHandler.addNewNumTeam(20);
+            }
+            if(users > MAX_USERS){
+                userHandler.clearNotActiveUsers();
+            }
+        }
+    });
+}
+
 var getIndexOfTeamById = function getIndexOfTeamById(id){
     var defer = Promise.defer();
     var index;
@@ -384,19 +401,19 @@ var getIndexOfTeamById = function getIndexOfTeamById(id){
 
 var getMultiplierBoost = function getMultiplierBoost(){
     return multiplierBoost;
-}
+};
 
 var getInitPriceOfFans = function getInitPriceOfFans(){
     return initPriceOfFans;
-}
+};
 
 var getInitPriceOfFacilities = function getInitPriceOfFacilities(){
     return initPriceOfFacilities;
-}
+};
 
 var getInitPriceOfStadium = function getInitPriceOfStadium(){
     return initPriceOfStadium;
-}
+};
 
 var getFansMultiplier = function getFansMultiplier(){
     return fansMultiplier;

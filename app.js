@@ -10,7 +10,7 @@ var fs = require('fs');
 
 var userHandler = require("./userHandler");
 
-var version = "0.0.0.3";
+var version = "2.0.0.2";
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(multer()); // for parsing multipart/form-data
@@ -34,6 +34,15 @@ app.post('/newUser', function (req, res) {
 
 app.post('/clear', function (req, res) {
     userHandler.clearNotActiveUsers();
+});
+
+app.post('/sendMessage', function (req, res) {
+    try {
+        reqHandler.sendMessage(req.body, res);
+    }catch (err){
+        console.log("sendMessage",err);
+        res.status(502).send("error");
+    }
 });
 
 /*
@@ -177,11 +186,12 @@ app.get('/getTimeTillNextMatch', function (req, res) {
     reqHandler.getTimeTillNextMatch(res);
 });
 
+/*
 //------------------------------------------------
 app.get('/executeNextFixture', function (req, res) {
     reqHandler.executeNextFixture(req,res);
 });
-
+*/
 app.get('/getTime', function (req, res) {
     obj = {};
     obj["Time"] = Date.now();
@@ -195,10 +205,10 @@ app.get('/', function(request, response) {
 
 
 
-//app.set('port', (process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 5000));
 
-//var server = app.listen(app.get('port'), function () {
-var server = app.listen(4000, function () {
+var server = app.listen(app.get('port'), function () {
+//var server = app.listen(4000, function () {
     var host = server.address().address;
     var port = server.address().port;
     console.log('Listening at http://%s:%s', host, port);

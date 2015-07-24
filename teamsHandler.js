@@ -132,7 +132,8 @@ var addNewNumTeam = function addNewNumTeam(num){
             "logo": randomIntFromInterval(0,15),
             "teamName": "team " + ((leagueNum - 1)*20 + i),
             "id": -1,
-            "totalInstantTrain":0
+            "totalInstantTrain":0,
+            "totalChampionships" : 0
         };
         //var user = JSON.parse(body);
         teamsCollection.insert(team, function (err, data) {
@@ -301,7 +302,19 @@ var newTeamUser = function newTeamUser(detailsJson){
         obj["totalInstantTrain"] = 1;
         obj["lastGameInfo.homeTeam"] = detailsJson.teamName;
         obj["lastGameInfo.awayTeam"] = detailsJson.teamName +" U18";
-        obj["logo"] = detailsJson.logo;
+        obj["lastGameInfo.homeTeamGoals"] = 7;
+        obj["lastGameInfo.awayTeamGoals"] = 1;
+        obj["lastGameInfo.playersScoreGoal"]= "2 3 4 5 6 3 3";
+        obj["lastResult"] = 0;
+
+        if(!detailsJson.logo) {
+            obj["logo"] = detailsJson.logo;
+        }else{
+            obj["logo"] = 1;
+        }
+
+        obj["additionalFans"] = 0;
+        obj["totalChampionships"] = 0;
 
         obj["gamesHistory.allTime.wins"] = 0;
         obj["gamesHistory.allTime.losts"] = 0;
@@ -340,7 +353,7 @@ var getTeamById = function getTeamById (id){
     teamsCollection.findOne({id:id},function(err,data){
         if(!data){
             console.log("getTeamById err",err);
-            defer.resolve({user: "null"});
+            defer.resolve({team: "null"});
         }else{
             //console.log("getTeamById","ok");
             defer.resolve({team:data});

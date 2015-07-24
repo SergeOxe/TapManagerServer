@@ -22,8 +22,8 @@ var addNewBucket = function addNewBucket (user,res){
     //console.log(body);
     //var user = JSON.parse(body);
     var bucket = {
-        "valueForSecond": (1000000)/(HOURS*60*60),
-        "maxAmount": 1000000,
+        "valueForSecond": (50000)/(HOURS*60*60),
+        "maxAmount": 50000,
         "lastFlush": Date.now(),
         "level": 0,
         "id":user.id};

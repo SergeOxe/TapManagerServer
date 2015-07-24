@@ -13,7 +13,7 @@ var MIN_PLAYER_LEVEL = 1,MAX_PLAYER_LEVEL = 5;
 var MIN_PLAYER_PRICE = 4000,MAX_PLAYER_PRICE = 10000;
 var MIN_PRICE_TO_BOOST = 200,MAX_PRICE_TO_BOOST = 1000;
 var MIN_BOOST = 20,MAX_BOOST = 40;
-var MIN_IMAGE = 0,MAX_IMAGE = 6;
+var MIN_IMAGE = 0,MAX_IMAGE = 19;
 
 var firstNames = ["Hilton",
     "Stan",
@@ -34,17 +34,20 @@ var firstNames = ["Hilton",
     "Allan",
     "Herschel",
     "Vito",
-    "Doron",
+    "Diran",
     "Rogelio",
     "Solomon",
     "Martin",
-    "Almog",
+    "Al",
     "Leland",
     "Hubert",
     "Dewey",
     "Bryan",
     "Collin",
-    "Gilad",
+    "Tamir",
+    "Alon",
+    "Asaf",
+    "Boaz",
     "Jhon",
     "Berry",
     "Lukas",
@@ -99,6 +102,7 @@ var firstNames = ["Hilton",
     "Christoph",
     "Tim",
     "Max",
+    "Clark",
     "Jonathan",
     "Martin",
     "Adrian",
@@ -108,6 +112,10 @@ var firstNames = ["Hilton",
     "Christian",
     "Anton"];
 var lastNames = ["Mahmood",
+    "Croll",
+    "BenHa",
+    "Ambar",
+    "Dia",
     "Boehmer",
     "Sharlow",
     "Vallarta",
@@ -118,6 +126,7 @@ var lastNames = ["Mahmood",
     "Fried",
     "Graham",
     "Zdenek",
+    "Ox",
     "Mendicino",
     "Stoneman",
     "Brainard",
@@ -363,7 +372,7 @@ function boostPlayer(id,indexPlayer){
                 "content":player.firstName + " "+player.lastName+" is level "+ (player.level + 1) + " now."
             };
 
-            userHandler.addMessageToUser(id,message);
+            //userHandler.addMessageToUser(id,message);
         }else{
             obj["players."+indexPlayer +".currentBoost"] =  playerBoost + player.currentBoost;
         }
@@ -405,7 +414,7 @@ var boostPlayerLevelUp = function boostPlayerLevelUp(id,indexPlayer) {
                 "content": player.firstName + " " + player.lastName + " is level " + (player.level + 1) + " now"
             };
             teamHandler.addValueToTeamMulti(find,instantTrain);
-            userHandler.addMessageToUser(id, message);
+            //userHandler.addMessageToUser(id, message);
             updateSquad(find, obj).then(function (data) {
                 if (data == "null") {
                     defer.resolve("null");

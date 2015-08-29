@@ -90,6 +90,15 @@ var calcResult  = function  calcResult(i_HomeTeam, i_AwayTeam) {
         }
         */
 
+        /*
+        if(!i_HomeTeam.isBot){
+
+        }
+
+        if (!i_AwayTeam.isBot){
+
+        }
+        */
         var v_isHomeTeam = true;
         var matchInfo =  MatchInfo(i_HomeTeam, i_AwayTeam, homeTeamGoals, awayTeamGoals, crowdAtMatch);
         promises.push(UpdateMatchPlayed(i_HomeTeam,eHomeResult, matchInfo, v_isHomeTeam));
@@ -132,8 +141,13 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
 
         updateValue["additionalFans"] = randomIntFromInterval(10,150);
 
-        addValue["totalInstantTrain"] = 2;
-        instantTrain = 1;
+        if (team.totalInstantTrain  < 99) {
+            addValue["totalInstantTrain"] = 1;
+            instantTrain = 1;
+        }else{
+            addValue["totalInstantTrain"] = 0;
+            instantTrain = 0;
+        }
 
         updateValue["lastResult"]= 0;
         updateValue["statistics.currentLoseStreak"] = 0;
@@ -149,10 +163,10 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         instantTrain = 0;
 
         var fansLeft = randomIntFromInterval(-50,0);
-        if (team.gamesHistory.thisSeason.crowd - fansLeft > 0) {
+        if (team.gamesHistory.thisSeason.crowd + fansLeft > 0) {
             updateValue["additionalFans"] = fansLeft;
         }else {
-            updateValue["gamesHistory.thisSeason.crowd"] = 0;
+            updateValue["additionalFans"] = 0;
         }
 
         updateValue["lastResult"]= 1;
@@ -167,7 +181,7 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         addValue["statistics.currentWinlessStreak"] = 1;
 
 
-        addValue["totalInstantTrain"] = 1;
+        addValue["totalInstantTrain"] = 0;
         instantTrain = 0;
 
         updateValue["additionalFans"] =  randomIntFromInterval(5,80);
@@ -225,7 +239,7 @@ function  UpdateMatchPlayed(team,i_result,  i_matchInfo,  i_isHomeMatch) {
         //Expenses
         var ticketPrice = (team.shop.stadiumLevel + 1) * gameManager.getTicketPrice();
         var incomeFromTickets = crowdAtMatch * ticketPrice;
-        var incomeFromMerchandise = (GetFanBase(team) * (randomIntFromInterval(1, 8) / 10) *gameManager.getMerchandisePrice());
+        var incomeFromMerchandise = (GetFanBase(team) * (randomIntFromInterval(1, 8) / 10) * gameManager.getMerchandisePrice());
         var facilitiesCost = (team.shop.facilitiesLevel + 1) * gameManager.getFacilitiesFinanceMultiplier();
         var stadiumCost = i_isHomeMatch? (team.shop.stadiumLevel + 1) * gameManager.getStadiumFinanceMultiplier() : 0;
         squadHandler.getAllSquadSalaryById(team.id).then(function(salary){

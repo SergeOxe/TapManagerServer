@@ -508,6 +508,19 @@ var changePlayerName = function changePlayerName(id,playerDetails) {
     return defer.promise;
 };
 
+var getPlayerName = function getPlayerName(id,playerIndex) {
+    var defer = Promise.defer();
+    getSquadById(id).then(function(data){
+        if (data == "null"){
+            defer.resolve(-1);
+        }else{
+            var player = data.players[playerIndex];
+            defer.resolve(playerDetails.firstName +" "+playerDetails.lastName);
+        }
+    });
+    return defer.promise;
+};
+
 var getAllSquadSalaryById = function getAllSquadSalaryById(id) {
     var defer = Promise.defer();
     var find = {};
